@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">Trash Network - Recycle</string>
+    <string name="trash">Trash</string>
+
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="account">Account</string>
+    <string name="other">Other</string>
+    <string name="action_logout">Logout</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_map">Map</string>
+    <string name="action_credit_rank">Credit Rank</string>
+    <string name="action_credit_record">Credit Record</string>
+    <string name="action_scan_qr_code">Scan QR Code</string>
+    <string name="action_exit">Exit</string>
+
+    <string name="prompt_phone_number">Phone Number</string>
+    <string name="prompt_password">Password</string>
+    <string name="prompt_captcha">Captcha</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="error_illegal_id">Illegal ID</string>
+    <string name="error_incorrect_id">Incorrect ID</string>
+    <string name="error_incorrect_password">Incorrect password</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="response_data_corrupt">Received data has corrupted, please try again</string>
+    <string name="network_error">Network unavailable or connection timeout</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="server_internal_error">Remote server internal error</string>
+    <string name="alert_waiting">Please wait…</string>
+    <string name="alert_session_expired">Session has expired, please login again.</string>
+    <string name="error">Error</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Cancel</string>
+
+    <string name="your_location">Your Location</string>
+    <string name="unknown_location">Unknown Location</string>
+</resources>

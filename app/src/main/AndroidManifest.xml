@@ -31,7 +31,6 @@
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -46,7 +45,16 @@
 
         <activity
             android:name=".ui.activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.activity.ScanQRCodeActivity"
+            android:label="@string/action_scan_qr_code" />
+        <activity
+            android:name=".ui.activity.LoginActivity"
+            android:label="@string/action_sign_in"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ui.activity.SettingsActivity"
+            android:label="@string/action_settings"/>
     </application>
 
 </manifest>

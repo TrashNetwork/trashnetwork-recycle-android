@@ -19,16 +19,17 @@
     <string name="prompt_password">Password</string>
     <string name="prompt_captcha">Captcha</string>
     <string name="action_sign_in">Sign in</string>
-    <string name="error_illegal_id">Illegal ID</string>
-    <string name="error_incorrect_id">Incorrect ID</string>
-    <string name="error_incorrect_password">Incorrect password</string>
+    <string name="action_sign_up">Sign up</string>
+    <string name="error_illegal_phone_number">Illegal phone number</string>
+    <string name="error_illegal_password_length">Password is too long or too short</string>
     <string name="error_field_required">This field is required</string>
     <string name="response_data_corrupt">Received data has corrupted, please try again</string>
     <string name="network_error">Network unavailable or connection timeout</string>
     <string name="unknown_error">Unknown error</string>
     <string name="server_internal_error">Remote server internal error</string>
     <string name="alert_waiting">Please wait…</string>
-    <string name="alert_session_expired">Session has expired, please login again.</string>
+    <string name="alert_session_expired">Session has expired, please avatarlogin again.</string>
+    <string name="alert_click_avatar_login">Click avatar to login</string>
     <string name="error">Error</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -39,4 +40,6 @@
 
     <string name="your_location">Your Location</string>
     <string name="unknown_location">Unknown Location</string>
+    <string name="credit">Credit</string>
+    <string name="action_about">About</string>
 </resources>

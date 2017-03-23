@@ -12,17 +12,19 @@
     <string name="action_map">Map</string>
     <string name="action_credit_rank">Credit Rank</string>
     <string name="action_credit_record">Credit Record</string>
+    <string name="action_feedback">Feedback</string>
     <string name="action_scan_qr_code">Scan QR Code</string>
     <string name="action_exit">Exit</string>
 
-    <string name="prompt_phone_number">Phone Number</string>
+    <string name="prompt_user_name">User Name</string>
     <string name="prompt_password">Password</string>
-    <string name="prompt_captcha">Captcha</string>
+    <string name="prompt_email">Email</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_up">Sign up</string>
     <string name="error_illegal_phone_number">Illegal phone number</string>
     <string name="error_illegal_password_length">Password is too long or too short</string>
     <string name="error_field_required">This field is required</string>
+    <string name="error_illegal_email">Illegal email</string>
     <string name="response_data_corrupt">Received data has corrupted, please try again</string>
     <string name="network_error">Network unavailable or connection timeout</string>
     <string name="unknown_error">Unknown error</string>
@@ -41,5 +43,13 @@
     <string name="your_location">Your Location</string>
     <string name="unknown_location">Unknown Location</string>
     <string name="credit">Credit</string>
+    <string name="good">Good</string>
+    <string name="quantity">Quantity</string>
     <string name="action_about">About</string>
+    <string name="version">Version</string>
+
+    <string name="no_record">No record</string>
+    <string name="no_feedback">No feedback</string>
+    <string name="anonymous_user">Anonymous user</string>
+    <string name="alert_loading">Loading…</string>
 </resources>

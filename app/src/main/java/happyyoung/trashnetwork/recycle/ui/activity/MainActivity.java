@@ -14,9 +14,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.akashandroid90.imageletter.MaterialLetterIcon;
 import com.google.zxing.integration.android.IntentIntegrator;
 
 import butterknife.BindView;
@@ -24,9 +24,10 @@ import butterknife.ButterKnife;
 import happyyoung.trashnetwork.recycle.Application;
 import happyyoung.trashnetwork.recycle.R;
 import happyyoung.trashnetwork.recycle.service.LocationService;
+import happyyoung.trashnetwork.recycle.ui.fragment.CreditRecordFragment;
+import happyyoung.trashnetwork.recycle.ui.fragment.FeedbackFragment;
 import happyyoung.trashnetwork.recycle.ui.fragment.MapFragment;
 import happyyoung.trashnetwork.recycle.util.GlobalInfo;
-import happyyoung.trashnetwork.recycle.ui.activity.ScanQRCodeActivity;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity
 
     private FragmentManager mFragmentManager;
     private MapFragment mapFragment;
+    private CreditRecordFragment creditRecordFragment;
+    private FeedbackFragment feedbackFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +58,12 @@ public class MainActivity extends AppCompatActivity
         mNavHeaderView = navView.getHeaderView(0);
         mFragmentManager = getSupportFragmentManager();
         mapFragment = MapFragment.newInstance(this);
+        creditRecordFragment = CreditRecordFragment.newInstance(this);
+        feedbackFragment = FeedbackFragment.newInstance(this);
         mFragmentManager.beginTransaction()
                 .add(R.id.main_container, mapFragment)
+                .add(R.id.main_container, feedbackFragment)
+                .add(R.id.main_container, creditRecordFragment)
                 .commit();
         onNavigationItemSelected(navView.getMenu().getItem(0));
 
@@ -74,11 +81,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void updateUserInfo(){
-        ImageView userPortrait = ButterKnife.findById(mNavHeaderView, R.id.nav_header_portrait);
+        MaterialLetterIcon userPortrait = ButterKnife.findById(mNavHeaderView, R.id.nav_header_portrait);
         TextView txtPhoneNumber = ButterKnife.findById(mNavHeaderView, R.id.txt_nav_header_phone_number);
         TextView txtCredit = ButterKnife.findById(mNavHeaderView, R.id.txt_nav_header_credit);
         if(GlobalInfo.user == null){
             txtCredit.setVisibility(View.GONE);
+            userPortrait.setShapeColor(getResources().getColor(R.color.colorAccent));
+            userPortrait.setImageResource(R.drawable.ic_person_white_96dp);
             txtPhoneNumber.setText(R.string.alert_click_avatar_login);
             userPortrait.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -87,9 +96,11 @@ public class MainActivity extends AppCompatActivity
                 }
             });
         }else{
+            userPortrait.setShapeColor(Application.generateColorFromStr(GlobalInfo.user.getUserName()));
+            userPortrait.setLetter(GlobalInfo.user.getUserName());
             txtCredit.setText(View.VISIBLE);
             txtCredit.setText(getString(R.string.credit) + ':' + GlobalInfo.user.getCredit());
-            txtPhoneNumber.setText(GlobalInfo.user.getPhoneNumber());
+            txtPhoneNumber.setText(GlobalInfo.user.getUserName());
             userPortrait.setOnClickListener(null);
         }
     }
@@ -131,6 +142,20 @@ public class MainActivity extends AppCompatActivity
                 ft.show(mapFragment);
                 ft.commit();
                 break;
+            case R.id.nav_credit_record:
+                setTitle(getString(R.string.action_credit_record));
+                ft = mFragmentManager.beginTransaction();
+                hideAllFragment(ft);
+                ft.show(creditRecordFragment);
+                ft.commit();
+                break;
+            case R.id.nav_feedback:
+                setTitle(getString(R.string.action_feedback));
+                ft = mFragmentManager.beginTransaction();
+                hideAllFragment(ft);
+                ft.show(feedbackFragment);
+                ft.commit();
+                break;
             case R.id.nav_scan_qrcode:
                 scanQRCode();
                 break;
@@ -147,6 +172,8 @@ public class MainActivity extends AppCompatActivity
 
     private void hideAllFragment(FragmentTransaction ft){
         ft.hide(mapFragment);
+        ft.hide(creditRecordFragment);
+        ft.hide(feedbackFragment);
     }
 
     private void scanQRCode(){

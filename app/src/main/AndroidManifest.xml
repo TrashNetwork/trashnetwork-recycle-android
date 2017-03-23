@@ -31,6 +31,7 @@
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -53,8 +54,12 @@
             android:name=".ui.activity.LoginActivity"
             android:label="@string/action_sign_in"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.activity.SettingsActivity"
-            android:label="@string/action_settings"/>
+        <activity
+            android:name=".ui.activity.SettingsActivity"
+            android:label="@string/action_settings" />
+        <activity
+            android:name=".ui.activity.AboutActivity"
+            android:label="@string/action_about"/>
     </application>
 
 </manifest>

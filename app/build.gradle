@@ -55,8 +55,9 @@ dependencies {
             'com.michaelpardo:activeandroid:3.+',
             'com.rengwuxian.materialedittext:library:2.1.4',
             'com.journeyapps:zxing-android-embedded:3.4.0',
-            'com.wuxiaolong.pullloadmorerecyclerview:library:1.1.2',
             'com.github.medyo:android-about-page:1.2',
+            'com.github.akashandroid90:imageletter:1.8@aar',
+            'com.malinskiy:superrecyclerview:1.1.4',
             'org.eclipse.paho:org.eclipse.paho.client.mqttv3:+',
     )
 

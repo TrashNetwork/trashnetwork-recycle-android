@@ -1,5 +1,6 @@
 package happyyoung.trashnetwork.recycle.ui.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
@@ -48,7 +49,12 @@ public class SettingsActivity extends AppCompatActivity {
 
         otherCard = new PreferenceCard(this)
                     .addGroup(getString(R.string.other))
-                    .addItem(R.drawable.ic_info_outline_48dp, getString(R.string.action_about), null, null);
+                    .addItem(R.drawable.ic_info_outline_48dp, getString(R.string.action_about), null, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(SettingsActivity.this, AboutActivity.class));
+                        }
+                    });
         container.addView(otherCard.getView());
     }
 

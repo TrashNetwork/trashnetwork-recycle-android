@@ -1,22 +1,20 @@
 package happyyoung.trashnetwork.recycle.model;
 
-import android.graphics.Bitmap;
-
 /**
  * Created by shengyun-zhou <GGGZ-1101-28@Live.cn> on 2017-02-19
  */
 public class User {
     private Long userId;
-    private String phoneNumber;
+    private String userName;
     private Integer credit;
 
-    public User(Long userId, String phoneNumber) {
-        this(userId, phoneNumber, 0);
+    public User(Long userId, String userName) {
+        this(userId, userName, 0);
     }
 
-    public User(Long userId, String phoneNumber, Integer credit) {
+    public User(Long userId, String userName, Integer credit) {
         this.userId = userId;
-        this.phoneNumber = phoneNumber;
+        this.userName = userName;
         this.credit = credit;
     }
 
@@ -24,12 +22,12 @@ public class User {
         return userId;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public Integer getCredit() {

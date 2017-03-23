@@ -24,17 +24,18 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <ProgressBar android:visibility="gone"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:indeterminate="true"
+        android:indeterminateOnly="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:id="@+id/progress_signin" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <ProgressBar android:visibility="invisible"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:indeterminate="true"
-            android:indeterminateOnly="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/progress_signin" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -78,39 +79,41 @@
                     android:paddingStart="@dimen/activity_horizontal_margin"
                     android:paddingEnd="@dimen/activity_horizontal_margin">
 
+
+
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/item_padding">
 
                         <ImageView
-                            android:id="@+id/icon_phone_login"
+                            android:id="@+id/icon_person_login"
                             android:layout_width="@dimen/normal_icon_size"
                             android:layout_height="@dimen/normal_icon_size"
                             android:layout_marginRight="@dimen/activity_horizontal_margin"
                             android:layout_centerVertical="true"
                             android:tint="@color/colorAccent"
-                            app:srcCompat="@drawable/ic_phone"
+                            app:srcCompat="@drawable/ic_person"
                             />
 
                         <com.rengwuxian.materialedittext.MaterialAutoCompleteTextView
-                            android:id="@+id/edit_phone_number"
+                            android:id="@+id/edit_user_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:hint="@string/prompt_phone_number"
+                            android:hint="@string/prompt_user_name"
                             android:imeOptions="actionNext"
-                            android:inputType="phone"
                             android:completionThreshold="1"
                             android:maxLength="20"
                             android:maxLines="1"
-                            android:layout_toRightOf="@+id/icon_phone_login"
+                            android:layout_toRightOf="@+id/icon_person_login"
                             app:met_textColorHint="@color/grey_500"
                             app:met_underlineColor="@color/grey_500"
                             app:met_primaryColor="@color/colorAccent"
-                            app:met_floatingLabelText="@string/prompt_phone_number"
+                            app:met_floatingLabelText="@string/prompt_user_name"
                             app:met_floatingLabel="highlight"
-                            app:met_clearButton="true"/>
+                            app:met_clearButton="true"
+                            app:met_iconLeft="@drawable/ic_phone"/>
 
                     </RelativeLayout>
 
@@ -132,7 +135,6 @@
                             android:id="@+id/edit_password"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:imeActionLabel="@string/action_sign_in"
                             android:imeOptions="actionDone"
                             android:inputType="textPassword"
                             android:maxLines="1"
@@ -151,37 +153,39 @@
 
                     </RelativeLayout>
 
-                    <RelativeLayout android:id="@+id/captcha_view_area"
+                    <RelativeLayout android:id="@+id/email_view_area"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/item_padding"
                         android:visibility="gone">
 
+                        <ImageView
+                            android:id="@+id/icon_email_signup"
+                            android:layout_width="@dimen/normal_icon_size"
+                            android:layout_height="@dimen/normal_icon_size"
+                            android:layout_marginRight="@dimen/activity_horizontal_margin"
+                            android:layout_centerVertical="true"
+                            android:tint="@color/colorAccent"
+                            app:srcCompat="@drawable/ic_email" />
+
                         <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edit_captcha"
+                            android:id="@+id/edit_email"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_toStartOf="@+id/btn_send_captcha"
-                            android:imeActionLabel="@string/action_sign_in"
+                            android:layout_toEndOf="@+id/icon_email_signup"
                             android:imeOptions="actionDone"
+                            android:inputType="textEmailAddress"
                             android:maxLines="1"
                             android:layout_centerVertical="true"
-                            android:layout_marginEnd="@dimen/item_padding"
                             app:met_textColorHint="@color/grey_500"
                             app:met_underlineColor="@color/grey_500"
-                            android:hint="@string/prompt_captcha"
+                            android:hint="@string/prompt_email"
                             app:met_primaryColor="@color/colorAccent"
-                            app:met_floatingLabelText="@string/prompt_captcha"
+                            app:met_floatingLabelText="@string/prompt_email"
                             app:met_floatingLabel="highlight"
                             app:met_clearButton="true"
                             android:maxLength="20" />
 
-                        <Button android:id="@+id/btn_send_captcha"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_alignParentEnd="true"
-                            android:text="Send Captcha" />
 
                     </RelativeLayout>
 

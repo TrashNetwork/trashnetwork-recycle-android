@@ -12,14 +12,16 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <de.hdodenhof.circleimageview.CircleImageView
+    <com.github.akashandroid90.imageletter.MaterialLetterIcon
         android:id="@+id/nav_header_portrait"
         android:layout_width="@dimen/nav_header_portrait_size"
         android:layout_height="@dimen/nav_header_portrait_size"
-        android:src="@drawable/ic_person_96dp"
-        app:civ_border_width="1dp"
-        app:civ_fill_color="@android:color/white"
-        app:civ_border_color="@android:color/white"
+        app:letter_color="@android:color/white"
+        app:letter_size="24"
+        app:shape_type="circle"
+        app:is_oval="true"
+        app:letters_number="2"
+        app:shape_color="@color/colorAccent"
         android:layout_marginBottom="@dimen/activity_vertical_margin"/>
 
     <TextView android:id="@+id/txt_nav_header_phone_number"

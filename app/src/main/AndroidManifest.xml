@@ -20,6 +20,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
+            android:name="AA_DB_NAME"
+            android:value="TrashNetwork.db" />
+        <meta-data
+            android:name="AA_DB_VERSION"
+            android:value="1" />
+        <meta-data
+            android:name="AA_MODELS"
+            android:value="${applicationId}.database.model.LoginUserRecord" />
+        <meta-data
             android:name="TN_HTTP_API_BASE_URL_V1"
             android:value="@string/TN_HTTP_API_BASE_URL_V1" />
         <meta-data
@@ -59,7 +68,12 @@
             android:label="@string/action_settings" />
         <activity
             android:name=".ui.activity.AboutActivity"
-            android:label="@string/action_about"/>
+            android:label="@string/action_about" />
+        <activity
+            android:name=".ui.activity.CreditRecordActivity"
+            android:label="@string/action_credit_record" />
+        <activity android:name=".ui.activity.NewFeedbackActivity"
+            android:label="@string/action_new_feedback"/>
     </application>
 
 </manifest>

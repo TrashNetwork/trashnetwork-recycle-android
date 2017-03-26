@@ -1,6 +1,7 @@
 package happyyoung.trashnetwork.recycle.ui.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -20,15 +21,16 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import happyyoung.trashnetwork.recycle.R;
 import happyyoung.trashnetwork.recycle.adapter.FeedbackAdapter;
 import happyyoung.trashnetwork.recycle.model.Feedback;
+import happyyoung.trashnetwork.recycle.ui.activity.NewFeedbackActivity;
 import happyyoung.trashnetwork.recycle.ui.widget.DateSelector;
 
 public class FeedbackFragment extends Fragment {
     private View rootView;
-    @BindView(R.id.feedback_list)
-    SuperRecyclerView feedbackListView;
+    @BindView(R.id.feedback_list) SuperRecyclerView feedbackListView;
     @BindView(R.id.btn_post_feedback) FloatingActionButton btnPostFeedback;
     private DateSelector dateSelector;
 
@@ -85,7 +87,6 @@ public class FeedbackFragment extends Fragment {
             }
         });
 
-
         feedbackListView.setupMoreListener(new OnMoreListener() {
             @Override
             public void onMoreAsked(int numberOfItems, int numberBeforeMore, int currentItemPos) {
@@ -97,6 +98,11 @@ public class FeedbackFragment extends Fragment {
         feedbackListView.setAdapter(adapter);
         refreshFeedback(true);
         return rootView;
+    }
+
+    @OnClick(R.id.btn_post_feedback)
+    void onBtnPostFeedbackClick(View v){
+        startActivity(new Intent(getContext(), NewFeedbackActivity.class));
     }
 
     private void updateTime(){

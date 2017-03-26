@@ -27,6 +27,19 @@ public class HttpApi {
 
     public static class AccountApi{
         public static final String LOGIN = "recycle/account/login";
+        public static final String REGISTER = "recycle/account/register";
         public static final String LOGOUT = "recycle/account/logout";
+        public static final String CHECK_LOGIN = "cleaning/account/check_login";
+        public static final String SELF_INFO = "recycle/account/self";
+    }
+
+    public static class CreditRecordApi{
+        public static final String QUERY_RECORD = "recycle/credit/record";
+        public static final String POST_RECORD_BY_BOTTLE_RECYCLE = "recycle/credit/record/new/bottle_recycle";
+    }
+
+    public static class FeedbackApi{
+        public static final String QUERY_FEEDBACK = "public/feedback/feedbacks";
+        public static final String POST_FEEDBACK = "recycle/feedback/new_feekback";
     }
 }

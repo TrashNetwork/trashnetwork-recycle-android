@@ -71,7 +71,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separator_size"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="@dimen/item_padding"
         android:background="@color/grey_300"/>
 
 </LinearLayout>

@@ -1,5 +1,6 @@
 package happyyoung.trashnetwork.recycle.ui.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,11 +9,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.Request;
+
 import butterknife.BindDimen;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import happyyoung.trashnetwork.recycle.Application;
 import happyyoung.trashnetwork.recycle.R;
+import happyyoung.trashnetwork.recycle.database.model.LoginUserRecord;
+import happyyoung.trashnetwork.recycle.net.http.HttpApi;
+import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonListener;
+import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonRequest;
+import happyyoung.trashnetwork.recycle.net.model.result.Result;
 import happyyoung.trashnetwork.recycle.ui.widget.PreferenceCard;
+import happyyoung.trashnetwork.recycle.util.DatabaseUtil;
 import happyyoung.trashnetwork.recycle.util.GlobalInfo;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -59,7 +69,52 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void logout(){
+        final ProgressDialog pd = new ProgressDialog(SettingsActivity.this);
+        pd.setMessage(getString(R.string.alert_waiting));
+        pd.setCancelable(false);
+        pd.show();
+        HttpApi.startRequest(new HttpApiJsonRequest(SettingsActivity.this, HttpApi.getApiUrl(HttpApi.AccountApi.LOGOUT), Request.Method.DELETE, GlobalInfo.token, null,
+                new HttpApiJsonListener<Result>(Result.class) {
+                    @Override
+                    public void onResponse(Result data) {
+                        pd.dismiss();
+                        afterLogout();
+                    }
+
+                    @Override
+                    public boolean onErrorResponse(int statusCode, Result errorInfo) {
+                        pd.dismiss();
+                        afterLogout();
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onDataCorrupted(Throwable e) {
+                        pd.dismiss();
+                        afterLogout();
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onNetworkError(Throwable e) {
+                        pd.dismiss();
+                        afterLogout();
+                        return true;
+                    }
+                }));
+    }
+
+    private void afterLogout(){
+        LoginUserRecord lur = DatabaseUtil.findLoginUserRecord(GlobalInfo.user.getUserId());
+        if(lur != null) {
+            lur.setToken(null);
+            lur.save();
+        }
+        GlobalInfo.logout(this);
         accountCard.getView().setVisibility(View.GONE);
+        Intent intent = new Intent(Application.ACTION_LOGOUT);
+        intent.addCategory(getPackageName());
+        sendBroadcast(intent);
     }
 
     @Override

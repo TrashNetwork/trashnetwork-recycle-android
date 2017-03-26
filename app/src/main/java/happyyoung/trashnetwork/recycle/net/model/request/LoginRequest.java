@@ -4,20 +4,20 @@ package happyyoung.trashnetwork.recycle.net.model.request;
  * Created by shengyun-zhou <GGGZ-1101-28@Live.cn> on 2017-02-20
  */
 public class LoginRequest {
-    private String phoneNumber;
+    private String userName;
     private String password;
 
-    public LoginRequest(String phoneNumber, String password) {
-        this.phoneNumber = phoneNumber;
+    public LoginRequest(String userName, String password) {
+        this.userName = userName;
         this.password = password;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {

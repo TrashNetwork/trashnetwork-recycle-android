@@ -1,8 +1,12 @@
 package happyyoung.trashnetwork.recycle.ui.activity;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -15,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.akashandroid90.imageletter.MaterialLetterIcon;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -24,13 +29,14 @@ import butterknife.ButterKnife;
 import happyyoung.trashnetwork.recycle.Application;
 import happyyoung.trashnetwork.recycle.R;
 import happyyoung.trashnetwork.recycle.service.LocationService;
-import happyyoung.trashnetwork.recycle.ui.fragment.CreditRecordFragment;
 import happyyoung.trashnetwork.recycle.ui.fragment.FeedbackFragment;
 import happyyoung.trashnetwork.recycle.ui.fragment.MapFragment;
 import happyyoung.trashnetwork.recycle.util.GlobalInfo;
+import happyyoung.trashnetwork.recycle.util.HttpUtil;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    public static final String BUNDLE_KEY_UPDATE_USER_INFO = "UpdateUserInfo";
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
@@ -39,8 +45,10 @@ public class MainActivity extends AppCompatActivity
 
     private FragmentManager mFragmentManager;
     private MapFragment mapFragment;
-    private CreditRecordFragment creditRecordFragment;
     private FeedbackFragment feedbackFragment;
+
+    private boolean exitFlag = false;
+    private UserInfoReceiver userInfoReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +66,10 @@ public class MainActivity extends AppCompatActivity
         mNavHeaderView = navView.getHeaderView(0);
         mFragmentManager = getSupportFragmentManager();
         mapFragment = MapFragment.newInstance(this);
-        creditRecordFragment = CreditRecordFragment.newInstance(this);
         feedbackFragment = FeedbackFragment.newInstance(this);
         mFragmentManager.beginTransaction()
                 .add(R.id.main_container, mapFragment)
                 .add(R.id.main_container, feedbackFragment)
-                .add(R.id.main_container, creditRecordFragment)
                 .commit();
         onNavigationItemSelected(navView.getMenu().getItem(0));
 
@@ -72,6 +78,19 @@ public class MainActivity extends AppCompatActivity
         Application.checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         startService(new Intent(this, LocationService.class));
         updateUserInfo();
+
+        userInfoReceiver = new UserInfoReceiver();
+        IntentFilter filter = new IntentFilter(Application.ACTION_LOGIN);
+        filter.addCategory(getPackageName());
+        registerReceiver(userInfoReceiver, filter);
+        filter = new IntentFilter(Application.ACTION_LOGOUT);
+        filter.addCategory(getPackageName());
+        registerReceiver(userInfoReceiver, filter);
+        filter = new IntentFilter(Application.ACTION_USER_UPDATE);
+        filter.addCategory(getPackageName());
+        registerReceiver(userInfoReceiver, filter);
+        if(getIntent().getBooleanExtra(BUNDLE_KEY_UPDATE_USER_INFO, false))
+            HttpUtil.updateUserInfo(this);
     }
 
     private void exitApp(){
@@ -95,13 +114,15 @@ public class MainActivity extends AppCompatActivity
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 }
             });
+            navView.getMenu().findItem(R.id.nav_credit_record).setVisible(false);
         }else{
             userPortrait.setShapeColor(Application.generateColorFromStr(GlobalInfo.user.getUserName()));
             userPortrait.setLetter(GlobalInfo.user.getUserName());
             txtCredit.setText(View.VISIBLE);
-            txtCredit.setText(getString(R.string.credit) + ':' + GlobalInfo.user.getCredit());
+            txtCredit.setText(String.format(getString(R.string.credit_format), GlobalInfo.user.getCredit()));
             txtPhoneNumber.setText(GlobalInfo.user.getUserName());
             userPortrait.setOnClickListener(null);
+            navView.getMenu().findItem(R.id.nav_credit_record).setVisible(true);
         }
     }
 
@@ -111,6 +132,17 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            if(!exitFlag){
+                Toast.makeText(this, R.string.alert_press_again_to_exit, Toast.LENGTH_SHORT).show();
+                exitFlag = true;
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        exitFlag = false;
+                    }
+                }, 3000);
+                return;
+            }
             exitApp();
         }
     }
@@ -143,11 +175,7 @@ public class MainActivity extends AppCompatActivity
                 ft.commit();
                 break;
             case R.id.nav_credit_record:
-                setTitle(getString(R.string.action_credit_record));
-                ft = mFragmentManager.beginTransaction();
-                hideAllFragment(ft);
-                ft.show(creditRecordFragment);
-                ft.commit();
+                startActivity(new Intent(this, CreditRecordActivity.class));
                 break;
             case R.id.nav_feedback:
                 setTitle(getString(R.string.action_feedback));
@@ -172,7 +200,6 @@ public class MainActivity extends AppCompatActivity
 
     private void hideAllFragment(FragmentTransaction ft){
         ft.hide(mapFragment);
-        ft.hide(creditRecordFragment);
         ft.hide(feedbackFragment);
     }
 
@@ -181,5 +208,18 @@ public class MainActivity extends AppCompatActivity
                 .setOrientationLocked(false)
                 .setCaptureActivity(ScanQRCodeActivity.class)
                 .initiateScan();
+    }
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(userInfoReceiver);
+        super.onDestroy();
+    }
+
+    private class UserInfoReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateUserInfo();
+        }
     }
 }

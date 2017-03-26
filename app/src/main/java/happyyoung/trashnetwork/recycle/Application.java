@@ -21,6 +21,7 @@ public class Application extends com.activeandroid.app.Application {
     public static String ACTION_LOCATION;
     public static String ACTION_LOGIN;
     public static String ACTION_LOGOUT;
+    public static String ACTION_USER_UPDATE;
 
     public static int RANDOM_COLOR[];
     private static Random colorRandom;
@@ -39,6 +40,7 @@ public class Application extends com.activeandroid.app.Application {
         ACTION_LOCATION = getPackageName() + ".action.LOCATION";
         ACTION_LOGIN = getPackageName() + ".action.LOGIN";
         ACTION_LOGOUT = getPackageName() + ".action.LOGOUT";
+        ACTION_USER_UPDATE = getPackageName() + ".action.USER_UPDATE";
 
         RANDOM_COLOR = new int[]{
                 getResources().getColor(R.color.red_500),

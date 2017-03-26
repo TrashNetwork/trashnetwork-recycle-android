@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="happyyoung.trashnetwork.recycle.ui.fragment.CreditRecordFragment">
+    tools:context="happyyoung.trashnetwork.recycle.ui.activity.CreditRecordActivity">
 
     <include android:id="@+id/widget_date_selection"
         layout="@layout/widget_date_selection"/>

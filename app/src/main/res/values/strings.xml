@@ -55,6 +55,11 @@
     <string name="alert_loading">Loading…</string>
     <string name="alert_press_again_to_exit">Press again to exit</string>
     <string name="action_new_feedback">New Feedback</string>
+    <string name="alert_login_first">Please login first</string>
     <string name="title">Title</string>
     <string name="content">Content</string>
+    <string name="alert_location_outdate">Your location info has been outdated,
+        please try again after your location is updated.</string>
+    <string name="gain_credit_format">You have gained %d credits</string>
+    <string name="action_recycle_bottle">Recycle Bottle</string>
 </resources>

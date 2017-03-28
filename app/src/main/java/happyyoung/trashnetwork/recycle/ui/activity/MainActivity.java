@@ -3,6 +3,7 @@ package happyyoung.trashnetwork.recycle.ui.activity;
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -13,16 +14,22 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.akashandroid90.imageletter.MaterialLetterIcon;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +44,7 @@ import happyyoung.trashnetwork.recycle.util.HttpUtil;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     public static final String BUNDLE_KEY_UPDATE_USER_INFO = "UpdateUserInfo";
+    public static final String QRCODE_ACTION_RECYCLE_BOTTLE = "Recycle bottle";
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
@@ -148,6 +156,67 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(intentResult == null) {
+            super.onActivityResult(requestCode, resultCode, data);
+            return;
+        }
+        String qrCodeData = intentResult.getContents();
+        if(qrCodeData == null || qrCodeData.isEmpty())
+            return;
+        try {
+            JsonElement parsedData = new JsonParser().parse(qrCodeData);
+            if(!parsedData.getAsJsonObject().has("action"))
+                return;
+            switch (parsedData.getAsJsonObject().get("action").getAsString()){
+                case QRCODE_ACTION_RECYCLE_BOTTLE:
+                    if(!parsedData.getAsJsonObject().has("trash_id"))
+                        return;
+                    if(GlobalInfo.user == null){
+                        startActivity(new Intent(this, LoginActivity.class));
+                        Toast.makeText(this, R.string.alert_login_first, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    recycleBottle(parsedData.getAsJsonObject().get("trash_id").getAsLong());
+                    return;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void recycleBottle(final long trashId){
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_recycle_bottle, null, false);
+        final TextView txtQuantity = ButterKnife.findById(dialogView, R.id.txt_quantity);
+        final SeekBar seekQuantity = ButterKnife.findById(dialogView, R.id.seekbar_quantity);
+        seekQuantity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                txtQuantity.setText(Integer.toString(progress + 1));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.action_recycle_bottle)
+                .setView(dialogView)
+                .setNegativeButton(R.string.action_cancel, null)
+                .setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        HttpUtil.recycleBottle(MainActivity.this, trashId, seekQuantity.getProgress() + 1);
+                    }
+                })
+                .create();
+        dialog.show();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
@@ -207,6 +276,8 @@ public class MainActivity extends AppCompatActivity
         new IntentIntegrator(this)
                 .setOrientationLocked(false)
                 .setCaptureActivity(ScanQRCodeActivity.class)
+                .setBarcodeImageEnabled(false)
+                .setBeepEnabled(false)
                 .initiateScan();
     }
 

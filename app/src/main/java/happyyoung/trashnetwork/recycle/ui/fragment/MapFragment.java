@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
@@ -29,11 +30,10 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import happyyoung.trashnetwork.recycle.Application;
 import happyyoung.trashnetwork.recycle.R;
-import happyyoung.trashnetwork.recycle.model.UserLocation;
 import happyyoung.trashnetwork.recycle.util.GlobalInfo;
-import happyyoung.trashnetwork.recycle.util.GsonUtil;
 import happyyoung.trashnetwork.recycle.util.ImageUtil;
 
 public class MapFragment extends Fragment {
@@ -74,7 +74,17 @@ public class MapFragment extends Fragment {
 
         baiduMap = mapView.getMap();
         baiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(18));
+        baiduMap.setOnMapClickListener(new BaiduMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                showUserLocation(true);
+            }
 
+            @Override
+            public boolean onMapPoiClick(MapPoi mapPoi) {
+                return false;
+            }
+        });
         baiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -109,22 +119,39 @@ public class MapFragment extends Fragment {
         return rootView;
     }
 
-    private void showUserLocation(){
-        if(GlobalInfo.currentLocation == null || rootView == null)
-            return;
-        if(userMarker != null)
-            userMarker.remove();
+    @OnClick(R.id.user_location_area)
+    void onUserLocationViewClick(View v){
+        baiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(
+                new LatLng(GlobalInfo.currentLocation.getLatitude(),
+                        GlobalInfo.currentLocation.getLongitude())
+        ));
+    }
+
+    private void updateUserLocation(){
         LatLng pos = new LatLng(GlobalInfo.currentLocation.getLatitude(), GlobalInfo.currentLocation.getLongitude());
-        userMarkerOptions.position(pos);
-        userMarker = (Marker) baiduMap.addOverlay(userMarkerOptions);
+        if(userMarker == null){
+            userMarkerOptions.position(pos);
+            userMarker = (Marker) baiduMap.addOverlay(userMarkerOptions);
+        }else{
+            userMarker.setPosition(pos);
+        }
         if(!mapCenterFlag){
             baiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(pos));
             mapCenterFlag = true;
         }
         if(trashView.getVisibility() == View.VISIBLE)
             return;
+        showUserLocation(false);
+    }
+
+    private void showUserLocation(boolean fromUser){
+        if(GlobalInfo.currentLocation == null)
+            return;
+        if(userLocationView.getVisibility() != View.VISIBLE || !fromUser){
+            LatLng pos = new LatLng(GlobalInfo.currentLocation.getLatitude(), GlobalInfo.currentLocation.getLongitude());
+            userLocationGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(pos));
+        }
         userLocationView.setVisibility(View.VISIBLE);
-        userLocationGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(pos));
     }
 
     private void showGeoCoderError(ReverseGeoCodeResult reverseGeoCodeResult){
@@ -158,7 +185,7 @@ public class MapFragment extends Fragment {
     private class LocationReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            showUserLocation();
+            updateUserLocation();
         }
     }
 }

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.android.volley.Request;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapPoi;
@@ -33,11 +34,21 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import happyyoung.trashnetwork.recycle.Application;
 import happyyoung.trashnetwork.recycle.R;
+import happyyoung.trashnetwork.recycle.model.Trash;
+import happyyoung.trashnetwork.recycle.net.http.HttpApi;
+import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonListener;
+import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonRequest;
+import happyyoung.trashnetwork.recycle.net.model.result.Result;
+import happyyoung.trashnetwork.recycle.net.model.result.TrashListResult;
 import happyyoung.trashnetwork.recycle.util.GlobalInfo;
 import happyyoung.trashnetwork.recycle.util.ImageUtil;
 
 public class MapFragment extends Fragment {
     private static final String LOG_TAG_GEO_CODER = "GeoCoder";
+    private static final String BUNDLE_KEY_MARKER_TYPE = "MarkerType";
+    private static final String BUNDLE_KEY_TRASH_ID = "TrashID";
+    private static final int MARKER_TYPE_USER = 1;
+    private static final int MARKER_TYPE_TRASH = 2;
 
     private View rootView;
     @BindView(R.id.bmap_view) MapView mapView;
@@ -88,7 +99,16 @@ public class MapFragment extends Fragment {
         baiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                return false;
+                Bundle bundle = marker.getExtraInfo();
+                switch (bundle.getInt(BUNDLE_KEY_MARKER_TYPE)){
+                    case MARKER_TYPE_USER:
+                        showUserLocation(true);
+                        break;
+                    case MARKER_TYPE_TRASH:
+                        showTrashInfo(bundle.getLong(BUNDLE_KEY_TRASH_ID));
+                        break;
+                }
+                return true;
             }
         });
         userMarkerOptions = new MarkerOptions()
@@ -110,6 +130,7 @@ public class MapFragment extends Fragment {
                 txtUserLocation.setText(reverseGeoCodeResult.getAddress());
             }
         });
+        getAllTrashInfo();
 
         locationReceiver = new LocationReceiver();
         IntentFilter filter = new IntentFilter(Application.ACTION_LOCATION);
@@ -127,11 +148,32 @@ public class MapFragment extends Fragment {
         ));
     }
 
+    private void addTrashMarker(){
+        MarkerOptions trashMarkerOpts = new MarkerOptions()
+                .draggable(false)
+                .alpha(0.9f)
+                .icon(BitmapDescriptorFactory.fromBitmap(
+                        ImageUtil.getBitmapFromDrawable(getContext(), R.drawable.ic_delete_green_32dp)));
+        for(Trash t : GlobalInfo.trashList){
+            if(!t.isBottleRecycle())
+                continue;
+            trashMarkerOpts.position(new LatLng(t.getLatitude(), t.getLongitude()));
+            Marker trashMarker = (Marker) baiduMap.addOverlay(trashMarkerOpts);
+            Bundle bundle = new Bundle();
+            bundle.putInt(BUNDLE_KEY_MARKER_TYPE, MARKER_TYPE_TRASH);
+            bundle.putLong(BUNDLE_KEY_TRASH_ID, t.getTrashId());
+            trashMarker.setExtraInfo(bundle);
+        }
+    }
+
     private void updateUserLocation(){
         LatLng pos = new LatLng(GlobalInfo.currentLocation.getLatitude(), GlobalInfo.currentLocation.getLongitude());
         if(userMarker == null){
             userMarkerOptions.position(pos);
             userMarker = (Marker) baiduMap.addOverlay(userMarkerOptions);
+            Bundle bundle = new Bundle();
+            bundle.putInt(BUNDLE_KEY_MARKER_TYPE, MARKER_TYPE_USER);
+            userMarker.setExtraInfo(bundle);
         }else{
             userMarker.setPosition(pos);
         }
@@ -147,11 +189,33 @@ public class MapFragment extends Fragment {
     private void showUserLocation(boolean fromUser){
         if(GlobalInfo.currentLocation == null)
             return;
+        trashView.setVisibility(View.GONE);
         if(userLocationView.getVisibility() != View.VISIBLE || !fromUser){
+            userLocationView.setVisibility(View.VISIBLE);
             LatLng pos = new LatLng(GlobalInfo.currentLocation.getLatitude(), GlobalInfo.currentLocation.getLongitude());
             userLocationGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(pos));
         }
-        userLocationView.setVisibility(View.VISIBLE);
+    }
+
+    private void showTrashInfo(long trashId){
+        Trash t = GlobalInfo.findTrashById(trashId);
+        if(t == null)
+            return;
+        userLocationView.setVisibility(View.GONE);
+        trashView.setVisibility(View.VISIBLE);
+        txtTrashName.setText(t.getTrashName(getContext()));
+        txtTrashDesc.setText(t.getDescription());
+    }
+
+    private void getAllTrashInfo(){
+        HttpApi.startRequest(new HttpApiJsonRequest(getActivity(), HttpApi.getApiUrl(HttpApi.PublicAPI.ALL_TRASHES), Request.Method.GET,
+                null, null, new HttpApiJsonListener<TrashListResult>(TrashListResult.class) {
+            @Override
+            public void onResponse(TrashListResult data) {
+                GlobalInfo.trashList = data.getTrashList();
+                addTrashMarker();
+            }
+        }));
     }
 
     private void showGeoCoderError(ReverseGeoCodeResult reverseGeoCodeResult){
@@ -176,6 +240,7 @@ public class MapFragment extends Fragment {
         super.onResume();
         mapView.onResume();
     }
+
     @Override
     public void onPause() {
         mapView.onPause();

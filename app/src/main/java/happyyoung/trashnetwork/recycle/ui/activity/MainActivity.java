@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity
         }else{
             userPortrait.setShapeColor(Application.generateColorFromStr(GlobalInfo.user.getUserName()));
             userPortrait.setLetter(GlobalInfo.user.getUserName());
-            txtCredit.setText(View.VISIBLE);
+            txtCredit.setVisibility(View.VISIBLE);
             txtCredit.setText(String.format(getString(R.string.credit_format), GlobalInfo.user.getCredit()));
             txtPhoneNumber.setText(GlobalInfo.user.getUserName());
             userPortrait.setOnClickListener(null);

@@ -29,7 +29,7 @@ public class HttpApi {
         public static final String LOGIN = "recycle/account/login";
         public static final String REGISTER = "recycle/account/register";
         public static final String LOGOUT = "recycle/account/logout";
-        public static final String CHECK_LOGIN = "cleaning/account/check_login";
+        public static final String CHECK_LOGIN = "recycle/account/check_login";
         public static final String SELF_INFO = "recycle/account/self";
     }
 

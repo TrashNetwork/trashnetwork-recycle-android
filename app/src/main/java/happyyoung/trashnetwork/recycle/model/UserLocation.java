@@ -8,16 +8,18 @@ import java.util.Date;
 public class UserLocation {
     private Double longitude;
     private Double latitude;
+    private String address;
     private Date updateTime;
 
-    public UserLocation(Double longitude, Double latitude, Date updateTime) {
+    public UserLocation(Double longitude, Double latitude, Date updateTime, String address) {
         this.longitude = longitude;
         this.latitude = latitude;
         this.updateTime = updateTime;
+        this.address = address;
     }
 
-    public UserLocation(Double longitude, Double latitude) {
-        this(longitude, latitude, new Date());
+    public UserLocation(Double longitude, Double latitude, String address) {
+        this(longitude, latitude, new Date(), address);
     }
 
 
@@ -43,5 +45,13 @@ public class UserLocation {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

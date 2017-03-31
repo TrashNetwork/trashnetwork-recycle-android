@@ -24,7 +24,7 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         resValue 'string', 'TN_HTTP_API_BASE_URL_V1', "${TN_HTTP_API_BASE_URL_V1}"
-        resValue 'string', 'BAIDU_LBS_API_KEY', "${BAIDU_LBS_API_KEY}"
+        resValue 'string', 'AMAP_LBS_API_KEY', "${AMAP_LBS_API_KEY}"
     }
     buildTypes {
         release {

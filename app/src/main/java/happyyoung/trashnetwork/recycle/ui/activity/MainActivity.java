@@ -81,9 +81,11 @@ public class MainActivity extends AppCompatActivity
                 .commit();
         onNavigationItemSelected(navView.getMenu().getItem(0));
 
-        Application.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
-        Application.checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-        Application.checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        Application.checkPermission(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+        });
         startService(new Intent(this, LocationService.class));
         updateUserInfo();
 

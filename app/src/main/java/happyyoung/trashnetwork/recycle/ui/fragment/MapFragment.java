@@ -13,21 +13,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.CameraUpdateFactory;
+import com.amap.api.maps.MapView;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
+import com.amap.api.maps.model.CameraPosition;
+import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MarkerOptions;
 import com.android.volley.Request;
-import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.BitmapDescriptorFactory;
-import com.baidu.mapapi.map.MapPoi;
-import com.baidu.mapapi.map.MapStatusUpdateFactory;
-import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.map.Marker;
-import com.baidu.mapapi.map.MarkerOptions;
-import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.search.core.SearchResult;
-import com.baidu.mapapi.search.geocode.GeoCodeResult;
-import com.baidu.mapapi.search.geocode.GeoCoder;
-import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
-import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
-import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,32 +32,27 @@ import happyyoung.trashnetwork.recycle.model.Trash;
 import happyyoung.trashnetwork.recycle.net.http.HttpApi;
 import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonListener;
 import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonRequest;
-import happyyoung.trashnetwork.recycle.net.model.result.Result;
 import happyyoung.trashnetwork.recycle.net.model.result.TrashListResult;
 import happyyoung.trashnetwork.recycle.util.GlobalInfo;
 import happyyoung.trashnetwork.recycle.util.ImageUtil;
 
 public class MapFragment extends Fragment {
-    private static final String LOG_TAG_GEO_CODER = "GeoCoder";
     private static final String BUNDLE_KEY_MARKER_TYPE = "MarkerType";
     private static final String BUNDLE_KEY_TRASH_ID = "TrashID";
     private static final int MARKER_TYPE_USER = 1;
     private static final int MARKER_TYPE_TRASH = 2;
 
     private View rootView;
-    @BindView(R.id.bmap_view) MapView mapView;
+    @BindView(R.id.amap_view) MapView mapView;
     @BindView(R.id.user_location_area) View userLocationView;
     @BindView(R.id.txt_user_location) TextView txtUserLocation;
     @BindView(R.id.trash_view_area) View trashView;
     @BindView(R.id.txt_trash_name) TextView txtTrashName;
     @BindView(R.id.txt_trash_desc) TextView txtTrashDesc;
 
-    private BaiduMap baiduMap;
     private boolean mapCenterFlag = false;
-
-    private MarkerOptions userMarkerOptions;
+    private AMap amap;
     private Marker userMarker;
-    private GeoCoder userLocationGeoCoder;
     private LocationReceiver locationReceiver;
 
     public MapFragment() {
@@ -83,23 +72,24 @@ public class MapFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_map, container, false);
         ButterKnife.bind(this, rootView);
 
-        baiduMap = mapView.getMap();
-        baiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(18));
-        baiduMap.setOnMapClickListener(new BaiduMap.OnMapClickListener() {
+        mapView.onCreate(savedInstanceState);
+        amap = mapView.getMap();
+        amap.getUiSettings().setCompassEnabled(true);
+        amap.getUiSettings().setScaleControlsEnabled(true);
+        amap.getUiSettings().setZoomGesturesEnabled(true);
+        amap.getUiSettings().setScrollGesturesEnabled(true);
+        amap.getUiSettings().setRotateGesturesEnabled(true);
+        amap.moveCamera(CameraUpdateFactory.zoomTo(18f));
+        amap.setOnMapClickListener(new AMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
                 showUserLocation(true);
             }
-
-            @Override
-            public boolean onMapPoiClick(MapPoi mapPoi) {
-                return false;
-            }
         });
-        baiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
+        amap.setOnMarkerClickListener(new AMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                Bundle bundle = marker.getExtraInfo();
+                Bundle bundle = (Bundle) marker.getObject();
                 switch (bundle.getInt(BUNDLE_KEY_MARKER_TYPE)){
                     case MARKER_TYPE_USER:
                         showUserLocation(true);
@@ -111,25 +101,7 @@ public class MapFragment extends Fragment {
                 return true;
             }
         });
-        userMarkerOptions = new MarkerOptions()
-                .draggable(false)
-                .alpha((float) 0.9)
-                .icon(BitmapDescriptorFactory.fromBitmap(ImageUtil.getBitmapFromDrawable(getContext(), R.drawable.ic_location_red)));
-        userLocationGeoCoder = GeoCoder.newInstance();
-        userLocationGeoCoder.setOnGetGeoCodeResultListener(new OnGetGeoCoderResultListener() {
-            @Override
-            public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {}
 
-            @Override
-            public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
-                if(reverseGeoCodeResult == null || reverseGeoCodeResult.error != SearchResult.ERRORNO.NO_ERROR){
-                    showGeoCoderError(reverseGeoCodeResult);
-                    txtUserLocation.setText(R.string.unknown_location);
-                    return;
-                }
-                txtUserLocation.setText(reverseGeoCodeResult.getAddress());
-            }
-        });
         getAllTrashInfo();
 
         locationReceiver = new LocationReceiver();
@@ -142,43 +114,46 @@ public class MapFragment extends Fragment {
 
     @OnClick(R.id.user_location_area)
     void onUserLocationViewClick(View v){
-        baiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(
-                new LatLng(GlobalInfo.currentLocation.getLatitude(),
-                        GlobalInfo.currentLocation.getLongitude())
-        ));
+        amap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                new CameraPosition(new LatLng(GlobalInfo.currentLocation.getLatitude(),
+                        GlobalInfo.currentLocation.getLongitude()), 18, 0, 0)));
     }
 
     private void addTrashMarker(){
         MarkerOptions trashMarkerOpts = new MarkerOptions()
                 .draggable(false)
-                .alpha(0.9f)
                 .icon(BitmapDescriptorFactory.fromBitmap(
                         ImageUtil.getBitmapFromDrawable(getContext(), R.drawable.ic_delete_green_32dp)));
         for(Trash t : GlobalInfo.trashList){
             if(!t.isBottleRecycle())
                 continue;
             trashMarkerOpts.position(new LatLng(t.getLatitude(), t.getLongitude()));
-            Marker trashMarker = (Marker) baiduMap.addOverlay(trashMarkerOpts);
+            Marker trashMarker = amap.addMarker(trashMarkerOpts);
             Bundle bundle = new Bundle();
             bundle.putInt(BUNDLE_KEY_MARKER_TYPE, MARKER_TYPE_TRASH);
             bundle.putLong(BUNDLE_KEY_TRASH_ID, t.getTrashId());
-            trashMarker.setExtraInfo(bundle);
+            trashMarker.setObject(bundle);
         }
     }
 
     private void updateUserLocation(){
         LatLng pos = new LatLng(GlobalInfo.currentLocation.getLatitude(), GlobalInfo.currentLocation.getLongitude());
         if(userMarker == null){
-            userMarkerOptions.position(pos);
-            userMarker = (Marker) baiduMap.addOverlay(userMarkerOptions);
+            MarkerOptions userMarkerOptions = new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromBitmap(
+                            ImageUtil.getBitmapFromDrawable(getContext(), R.drawable.ic_location_red)))
+                    .position(pos);
+            userMarker = amap.addMarker(userMarkerOptions);
             Bundle bundle = new Bundle();
             bundle.putInt(BUNDLE_KEY_MARKER_TYPE, MARKER_TYPE_USER);
-            userMarker.setExtraInfo(bundle);
+            userMarker.setObject(bundle);
         }else{
             userMarker.setPosition(pos);
         }
         if(!mapCenterFlag){
-            baiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(pos));
+            amap.moveCamera(CameraUpdateFactory.newCameraPosition(
+                    new CameraPosition(pos, 18, 0, 0)
+            ));
             mapCenterFlag = true;
         }
         if(trashView.getVisibility() == View.VISIBLE)
@@ -192,8 +167,7 @@ public class MapFragment extends Fragment {
         trashView.setVisibility(View.GONE);
         if(userLocationView.getVisibility() != View.VISIBLE || !fromUser){
             userLocationView.setVisibility(View.VISIBLE);
-            LatLng pos = new LatLng(GlobalInfo.currentLocation.getLatitude(), GlobalInfo.currentLocation.getLongitude());
-            userLocationGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(pos));
+            txtUserLocation.setText(GlobalInfo.currentLocation.getAddress());
         }
     }
 
@@ -218,20 +192,11 @@ public class MapFragment extends Fragment {
         }));
     }
 
-    private void showGeoCoderError(ReverseGeoCodeResult reverseGeoCodeResult){
-        if(reverseGeoCodeResult == null){
-            Log.e(LOG_TAG_GEO_CODER, "Geo coder error");
-        }else if(reverseGeoCodeResult.error != SearchResult.ERRORNO.NO_ERROR){
-            Log.e(LOG_TAG_GEO_CODER, "Geo coder error code: " + reverseGeoCodeResult.error);
-        }
-    }
-
     @Override
     public void onDestroy() {
         mapView.onDestroy();
         getContext().unregisterReceiver(locationReceiver);
         rootView = null;
-        userLocationGeoCoder.destroy();
         super.onDestroy();
     }
 
@@ -245,6 +210,12 @@ public class MapFragment extends Fragment {
     public void onPause() {
         mapView.onPause();
         super.onPause();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
     }
 
     private class LocationReceiver extends BroadcastReceiver {

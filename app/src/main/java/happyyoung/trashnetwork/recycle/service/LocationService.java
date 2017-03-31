@@ -3,76 +3,79 @@ package happyyoung.trashnetwork.recycle.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.location.AMapLocationListener;
+
+import java.util.Date;
 
 import happyyoung.trashnetwork.recycle.Application;
 import happyyoung.trashnetwork.recycle.model.UserLocation;
 import happyyoung.trashnetwork.recycle.util.GlobalInfo;
 import happyyoung.trashnetwork.recycle.util.GsonUtil;
 
-public class LocationService extends Service implements BDLocationListener {
+public class LocationService extends Service implements AMapLocationListener {
     private final String TAG = "LocationService";
     private final int LOCATE_INTERVAL = 5000;
 
-    public LocationClient locationClient = null;
+    public AMapLocationClient locationClient = null;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        locationClient = new LocationClient(getApplicationContext());
-        locationClient.registerLocationListener(this);
-
-        LocationClientOption option = new LocationClientOption();
-        option.setCoorType("bd09ll");
-        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
-        option.setScanSpan(LOCATE_INTERVAL);
-        option.setOpenGps(true);
-        option.setIgnoreKillProcess(false);
-        option.SetIgnoreCacheException(true);
-        option.setEnableSimulateGps(false);
-        locationClient.setLocOption(option);
-        locationClient.start();
+        locationClient = new AMapLocationClient(getApplicationContext());
+        AMapLocationClientOption opt = new AMapLocationClientOption()
+                .setInterval(LOCATE_INTERVAL)
+                .setKillProcess(true)
+                .setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy)
+                .setNeedAddress(true);
+        opt.setWifiActiveScan(true);
+        opt.setMockEnable(false);
+        opt.setHttpTimeOut(15000);
+        opt.setLocationCacheEnable(true);
+        locationClient.setLocationOption(opt);
+        locationClient.setLocationListener(this);
+        locationClient.startLocation();
     }
 
+
+    @Override
+    public void onDestroy() {
+        locationClient.stopLocation();
+        locationClient.onDestroy();
+        super.onDestroy();
+    }
+
+    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 
     @Override
-    public void onReceiveLocation(BDLocation bdLocation) {
-        if(bdLocation.getLocType() == BDLocation.TypeServerError) {
-            Log.e(TAG, "Locate error due to server error");
-        }else if(bdLocation.getLocType() == BDLocation.TypeNetWorkException){
-            Log.e(TAG, "Locate error due to network exception");
-        }else if(bdLocation.getLocType() == BDLocation.TypeCriteriaException){
-            Log.e(TAG, "Locate error due to criteria exception");
-        }else if(bdLocation.getLocType() == BDLocation.TypeNetWorkLocation ||
-                 bdLocation.getLocType() == BDLocation.TypeGpsLocation){
-            sendLocation(bdLocation.getLongitude(), bdLocation.getLatitude());
+    public void onLocationChanged(AMapLocation aMapLocation) {
+        if(aMapLocation == null)
+            return;
+        if (aMapLocation.getErrorCode() == 0) {
+            UserLocation newLoc = new UserLocation(aMapLocation.getLongitude(),
+                    aMapLocation.getLatitude(), new Date(aMapLocation.getTime()),
+                    aMapLocation.getAddress());
+            sendLocation(newLoc);
+        }else {
+            Log.e(TAG, "location Error, ErrCode:" + aMapLocation.getErrorCode() + ", errInfo:"
+                    + aMapLocation.getErrorInfo());
         }
     }
 
-    @Override
-    public void onConnectHotSpotMessage(String s, int i) {}
-
-    private void sendLocation(double longitude, double latitude) {
-        UserLocation newLocation = new UserLocation(longitude, latitude);
+    private void sendLocation(UserLocation newLocation) {
         GlobalInfo.currentLocation = newLocation;
         Intent intent = new Intent(Application.ACTION_LOCATION);
         intent.addCategory(getPackageName());
         intent.putExtra(Application.BUNDLE_KEY_USER_LOCATION_DATA, GsonUtil.getGson().toJson(newLocation));
         sendBroadcast(intent);
-    }
-
-    @Override
-    public void onDestroy() {
-        locationClient.stop();
-        super.onDestroy();
     }
 }

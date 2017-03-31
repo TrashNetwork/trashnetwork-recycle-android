@@ -51,6 +51,7 @@ public class MapFragment extends Fragment {
     @BindView(R.id.txt_trash_desc) TextView txtTrashDesc;
 
     private boolean mapCenterFlag = false;
+    private long currentShowTrashId = -1;
     private AMap amap;
     private Marker userMarker;
     private LocationReceiver locationReceiver;
@@ -119,6 +120,15 @@ public class MapFragment extends Fragment {
                         GlobalInfo.currentLocation.getLongitude()), 18, 0, 0)));
     }
 
+    @OnClick(R.id.trash_view_area)
+    void onTrashViewClick(View v){
+        Trash t = GlobalInfo.findTrashById(currentShowTrashId);
+        if(t == null)
+            return;
+        amap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                new CameraPosition(new LatLng(t.getLatitude(), t.getLongitude()), 18, 0, 0)));
+    }
+
     private void addTrashMarker(){
         MarkerOptions trashMarkerOpts = new MarkerOptions()
                 .draggable(false)
@@ -140,6 +150,7 @@ public class MapFragment extends Fragment {
         LatLng pos = new LatLng(GlobalInfo.currentLocation.getLatitude(), GlobalInfo.currentLocation.getLongitude());
         if(userMarker == null){
             MarkerOptions userMarkerOptions = new MarkerOptions()
+                    .alpha(0.9f)
                     .icon(BitmapDescriptorFactory.fromBitmap(
                             ImageUtil.getBitmapFromDrawable(getContext(), R.drawable.ic_location_red)))
                     .position(pos);
@@ -167,7 +178,10 @@ public class MapFragment extends Fragment {
         trashView.setVisibility(View.GONE);
         if(userLocationView.getVisibility() != View.VISIBLE || !fromUser){
             userLocationView.setVisibility(View.VISIBLE);
-            txtUserLocation.setText(GlobalInfo.currentLocation.getAddress());
+            if(GlobalInfo.currentLocation.getAddress() != null && !GlobalInfo.currentLocation.getAddress().isEmpty())
+                txtUserLocation.setText(GlobalInfo.currentLocation.getAddress());
+            else
+                txtUserLocation.setText(R.string.unknown_location);
         }
     }
 
@@ -175,6 +189,7 @@ public class MapFragment extends Fragment {
         Trash t = GlobalInfo.findTrashById(trashId);
         if(t == null)
             return;
+        currentShowTrashId = trashId;
         userLocationView.setVisibility(View.GONE);
         trashView.setVisibility(View.VISIBLE);
         txtTrashName.setText(t.getTrashName(getContext()));

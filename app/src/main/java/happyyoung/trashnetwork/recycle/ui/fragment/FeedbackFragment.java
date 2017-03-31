@@ -11,7 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.android.volley.Request;
 import com.malinskiy.superrecyclerview.OnMoreListener;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
@@ -25,11 +27,22 @@ import butterknife.OnClick;
 import happyyoung.trashnetwork.recycle.R;
 import happyyoung.trashnetwork.recycle.adapter.FeedbackAdapter;
 import happyyoung.trashnetwork.recycle.model.Feedback;
+import happyyoung.trashnetwork.recycle.net.PublicResultCode;
+import happyyoung.trashnetwork.recycle.net.http.HttpApi;
+import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonListener;
+import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonRequest;
+import happyyoung.trashnetwork.recycle.net.model.result.FeedbackListResult;
+import happyyoung.trashnetwork.recycle.net.model.result.Result;
 import happyyoung.trashnetwork.recycle.ui.activity.NewFeedbackActivity;
 import happyyoung.trashnetwork.recycle.ui.widget.DateSelector;
+import happyyoung.trashnetwork.recycle.util.DateTimeUtil;
+import happyyoung.trashnetwork.recycle.util.GlobalInfo;
 
 public class FeedbackFragment extends Fragment {
+    private static final int FEEDBACK_REQUEST_LIMIT = 20;
+
     private View rootView;
+    @BindView(R.id.txt_no_feedback) TextView txtNoFeedback;
     @BindView(R.id.feedback_list) SuperRecyclerView feedbackListView;
     @BindView(R.id.btn_post_feedback) FloatingActionButton btnPostFeedback;
     private DateSelector dateSelector;
@@ -92,7 +105,7 @@ public class FeedbackFragment extends Fragment {
             public void onMoreAsked(int numberOfItems, int numberBeforeMore, int currentItemPos) {
                 refreshFeedback(false);
             }
-        }, 0);
+        }, -1);
 
         adapter = new FeedbackAdapter(getContext(), feedbackList);
         feedbackListView.setAdapter(adapter);
@@ -113,9 +126,70 @@ public class FeedbackFragment extends Fragment {
                 0, 0, 0);
     }
 
-    private void refreshFeedback(boolean refresh){
-        //TODO
-        if(refresh)
+    private void refreshFeedback(final boolean refresh){
+        if(refresh) {
             updateTime();
+            dateSelector.setEnable(false);
+            feedbackListView.setRefreshing(true);
+        }
+
+        String url = HttpApi.getApiUrl(HttpApi.FeedbackApi.QUERY_FEEDBACK, DateTimeUtil.getUnixTimestampStr(startTime.getTime()),
+                DateTimeUtil.getUnixTimestampStr(endTime.getTime()), "" + FEEDBACK_REQUEST_LIMIT);
+        HttpApi.startRequest(new HttpApiJsonRequest(getActivity(), url, Request.Method.GET, GlobalInfo.token, null, new HttpApiJsonListener<FeedbackListResult>(FeedbackListResult.class) {
+            @Override
+            public void onResponse(FeedbackListResult data) {
+                showContentView(true, refresh);
+                if(refresh) {
+                    feedbackList.clear();
+                    adapter.notifyDataSetChanged();
+                }
+                for(Feedback fb : data.getFeedbackList()){
+                    feedbackList.add(fb);
+                    endTime.setTimeInMillis(fb.getFeedbackTime().getTime() - 1000);
+                    adapter.notifyItemInserted(feedbackList.size() - 1);
+                }
+                if(data.getFeedbackList().size() < FEEDBACK_REQUEST_LIMIT)
+                    feedbackListView.setNumberBeforeMoreIsCalled(-1);
+                else
+                    feedbackListView.setNumberBeforeMoreIsCalled(1);
+            }
+
+            @Override
+            public boolean onErrorResponse(int statusCode, Result errorInfo) {
+                showContentView(false, refresh);
+                if(errorInfo.getResultCode() == PublicResultCode.FEEDBACK_NOT_FOUND) {
+                    if(!refresh)
+                        feedbackListView.setNumberBeforeMoreIsCalled(-1);
+                    else
+                        return true;
+                }
+                return super.onErrorResponse(statusCode, errorInfo);
+            }
+
+            @Override
+            public boolean onDataCorrupted(Throwable e) {
+                showContentView(false, refresh);
+                return super.onDataCorrupted(e);
+            }
+
+            @Override
+            public boolean onNetworkError(Throwable e) {
+                showContentView(false, refresh);
+                return super.onNetworkError(e);
+            }
+        }));
+    }
+
+    private void showContentView(boolean hasContent, boolean refresh){
+        feedbackListView.setRefreshing(false);
+        feedbackListView.hideMoreProgress();
+        dateSelector.setEnable(true);
+        if(refresh && !hasContent){
+            feedbackListView.getRecyclerView().setVisibility(View.INVISIBLE);
+            txtNoFeedback.setVisibility(View.VISIBLE);
+        }else if(refresh && hasContent){
+            feedbackListView.getRecyclerView().setVisibility(View.VISIBLE);
+            txtNoFeedback.setVisibility(View.GONE);
+        }
     }
 }

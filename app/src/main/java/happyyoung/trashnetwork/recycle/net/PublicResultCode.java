@@ -17,4 +17,6 @@ public class PublicResultCode {
     public static final int TRASH_NOT_RECYCLE_BOTTLE = 200112;
     public static final int ILLEGAL_LOCATION = 200113;
     public static final int TOO_FAY_AWAY_FROM_TRASH = 200114;
+
+    public static final int FEEDBACK_NOT_FOUND = 200201;
 }

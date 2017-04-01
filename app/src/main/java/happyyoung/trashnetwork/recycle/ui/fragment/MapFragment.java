@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -200,7 +199,7 @@ public class MapFragment extends Fragment {
     }
 
     private void getAllTrashInfo(){
-        HttpApi.startRequest(new HttpApiJsonRequest(getActivity(), HttpApi.getApiUrl(HttpApi.PublicAPI.ALL_TRASHES), Request.Method.GET,
+        HttpApi.startRequest(new HttpApiJsonRequest(getActivity(), HttpApi.getApiUrl(HttpApi.PublicApi.ALL_TRASHES), Request.Method.GET,
                 null, null, new HttpApiJsonListener<TrashListResult>(TrashListResult.class) {
             @Override
             public void onResponse(TrashListResult data) {

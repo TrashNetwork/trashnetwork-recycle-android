@@ -43,7 +43,7 @@ public class HttpApi {
         public static final String POST_FEEDBACK = "recycle/feedback/new_feekback";
     }
 
-    public static class PublicAPI{
+    public static class PublicApi {
         public static final String ALL_TRASHES = "public/trash/all_trashes";
     }
 }

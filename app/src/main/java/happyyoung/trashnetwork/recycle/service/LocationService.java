@@ -22,7 +22,8 @@ public class LocationService extends Service implements AMapLocationListener {
     private final String TAG = "LocationService";
     private final int LOCATE_INTERVAL = 5000;
 
-    public AMapLocationClient locationClient = null;
+    private AMapLocationClient locationClient = null;
+    private long lastLocTime = -1;
 
     @Override
     public void onCreate() {
@@ -61,8 +62,11 @@ public class LocationService extends Service implements AMapLocationListener {
         if(aMapLocation == null)
             return;
         if (aMapLocation.getErrorCode() == 0) {
+            if(aMapLocation.getTime() < lastLocTime)
+                return;
+            lastLocTime = aMapLocation.getTime();
             UserLocation newLoc = new UserLocation(aMapLocation.getLongitude(),
-                    aMapLocation.getLatitude(), new Date(aMapLocation.getTime()),
+                    aMapLocation.getLatitude(), new Date(),
                     aMapLocation.getAddress());
             sendLocation(newLoc);
         }else {

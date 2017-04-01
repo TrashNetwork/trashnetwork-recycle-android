@@ -33,6 +33,7 @@ import happyyoung.trashnetwork.recycle.net.http.HttpApi;
 import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonListener;
 import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonRequest;
 import happyyoung.trashnetwork.recycle.net.model.result.TrashListResult;
+import happyyoung.trashnetwork.recycle.util.DateTimeUtil;
 import happyyoung.trashnetwork.recycle.util.GlobalInfo;
 import happyyoung.trashnetwork.recycle.util.ImageUtil;
 
@@ -46,6 +47,7 @@ public class MapFragment extends Fragment {
     @BindView(R.id.amap_view) MapView mapView;
     @BindView(R.id.user_location_area) View userLocationView;
     @BindView(R.id.txt_user_location) TextView txtUserLocation;
+    @BindView(R.id.txt_user_update_time) TextView txtUserUpdateTime;
     @BindView(R.id.trash_view_area) View trashView;
     @BindView(R.id.txt_trash_name) TextView txtTrashName;
     @BindView(R.id.txt_trash_desc) TextView txtTrashDesc;
@@ -178,6 +180,7 @@ public class MapFragment extends Fragment {
         trashView.setVisibility(View.GONE);
         if(userLocationView.getVisibility() != View.VISIBLE || !fromUser){
             userLocationView.setVisibility(View.VISIBLE);
+            txtUserUpdateTime.setText(DateTimeUtil.convertTimestamp(getContext(), GlobalInfo.currentLocation.getUpdateTime(), true, true, true));
             if(GlobalInfo.currentLocation.getAddress() != null && !GlobalInfo.currentLocation.getAddress().isEmpty())
                 txtUserLocation.setText(GlobalInfo.currentLocation.getAddress());
             else

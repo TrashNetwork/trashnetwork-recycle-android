@@ -1,5 +1,6 @@
 package happyyoung.trashnetwork.recycle.ui.widget;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -29,8 +30,16 @@ public class DateSelector {
     private Calendar date;
     private OnDateChangedListener listener;
 
+    public DateSelector(Activity activity, final Calendar date, @Nullable OnDateChangedListener listener){
+        this(activity.findViewById(android.R.id.content), activity, date, listener);
+    }
+
     public DateSelector(View rootView, final Calendar date, @Nullable OnDateChangedListener listener){
-        context = rootView.getContext();
+        this(rootView, rootView.getContext(), date, listener);
+    }
+
+    private DateSelector(View rootView, Context context, final Calendar date, @Nullable OnDateChangedListener listener){
+        this.context = context;
         ButterKnife.bind(this, rootView);
         dateEdit.setText(DateTimeUtil.convertTimestamp(context, date.getTime(), true, false));
         this.date = date;
@@ -39,7 +48,7 @@ public class DateSelector {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 date.set(year, month, dayOfMonth);
-                dateEdit.setText(DateTimeUtil.convertTimestamp(context, date.getTime(), true, false));
+                dateEdit.setText(DateTimeUtil.convertTimestamp(DateSelector.this.context, date.getTime(), true, false));
                 if(DateSelector.this.listener != null)
                     DateSelector.this.listener.onDateChanged(date);
             }

@@ -52,7 +52,7 @@ public class CreditRecordActivity extends AppCompatActivity {
 
         startTime = Calendar.getInstance();
         endTime = Calendar.getInstance();
-        dateSelector = new DateSelector(findViewById(android.R.id.content), endTime, new DateSelector.OnDateChangedListener() {
+        dateSelector = new DateSelector(this, endTime, new DateSelector.OnDateChangedListener() {
             @Override
             public void onDateChanged(Calendar newDate) {
                 endTime = newDate;

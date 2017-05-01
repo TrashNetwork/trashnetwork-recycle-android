@@ -1,12 +1,11 @@
 package happyyoung.trashnetwork.recycle.util;
 
 import android.content.Context;
-import android.content.Intent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import happyyoung.trashnetwork.recycle.model.Trash;
+import happyyoung.trashnetwork.recycle.model.RecyclePoint;
 import happyyoung.trashnetwork.recycle.model.User;
 import happyyoung.trashnetwork.recycle.model.UserLocation;
 
@@ -17,7 +16,7 @@ public class GlobalInfo {
     public static String token;
     public static User user;
     public static UserLocation currentLocation;
-    public static List<Trash> trashList = new ArrayList<>();
+    public static List<RecyclePoint> recyclePointList = new ArrayList<>();
 
     public static void logout(Context context){
         token = null;
@@ -25,9 +24,9 @@ public class GlobalInfo {
         currentLocation = null;
     }
 
-    public static Trash findTrashById(long trashId){
-        for(Trash t : trashList){
-            if(t.getTrashId().equals(trashId))
+    public static RecyclePoint findRecyclePointById(long recyclePointId){
+        for(RecyclePoint t : recyclePointList){
+            if(t.getRecyclePointId().equals(recyclePointId))
                 return t;
         }
         return null;

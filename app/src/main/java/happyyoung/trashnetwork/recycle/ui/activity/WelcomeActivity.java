@@ -17,8 +17,10 @@ import happyyoung.trashnetwork.recycle.net.http.HttpApi;
 import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonListener;
 import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonRequest;
 import happyyoung.trashnetwork.recycle.net.model.result.Result;
+import happyyoung.trashnetwork.recycle.net.model.result.UserResult;
 import happyyoung.trashnetwork.recycle.util.DatabaseUtil;
 import happyyoung.trashnetwork.recycle.util.GlobalInfo;
+import happyyoung.trashnetwork.recycle.util.HttpUtil;
 
 /**
  * Created by shengyun-zhou <GGGZ-1101-28@Live.cn> on 2017-02-12
@@ -35,12 +37,12 @@ public class WelcomeActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if(records.isEmpty()) {
-                    enterMainActivity(false);
+                    enterMainActivity();
                     return;
                 }
                 LoginUserRecord lur = records.get(0);
                 if(lur.getToken() == null || lur.getToken().isEmpty())
-                    enterMainActivity(false);
+                    enterMainActivity();
                 else
                     quickLogin(lur);
             }
@@ -52,41 +54,45 @@ public class WelcomeActivity extends AppCompatActivity {
         HttpApi.startRequest(new HttpApiJsonRequest(getApplicationContext(), url, Request.Method.GET, lur.getToken(), null,
                 new HttpApiJsonListener<Result>(Result.class) {
                     @Override
-                    public void onResponse(Result data) {
+                    public void onDataResponse(Result data) {
                         GlobalInfo.token = lur.getToken();
-                        GlobalInfo.user = new User(lur.getUserId(), lur.getUserName());
-                        DatabaseUtil.updateLoginRecord(GlobalInfo.user, GlobalInfo.token);
-                        enterMainActivity(true);
+                        HttpUtil.updateUserInfo(WelcomeActivity.this, new HttpApiJsonListener<UserResult>(UserResult.class) {
+                            @Override
+                            public void onDataResponse(UserResult data) {
+                                GlobalInfo.user = data.getUser();
+                                GlobalInfo.user.setUserName(lur.getUserName());
+                                DatabaseUtil.updateLoginRecord(GlobalInfo.user, GlobalInfo.token);
+                                enterMainActivity();
+                            }
+
+                            @Override
+                            public void onErrorResponse() {
+                                enterMainActivity();
+                            }
+
+                            @Override
+                            public boolean onErrorDataResponse(int statusCode, Result errorInfo) {
+                                Toast.makeText(WelcomeActivity.this, errorInfo.getMessage(), Toast.LENGTH_SHORT).show();
+                                return true;
+                            }
+                        });
                     }
 
                     @Override
-                    public boolean onErrorResponse(int statusCode, Result errorInfo) {
-                        if(errorInfo.getResultCode() == 401){
-                            Toast.makeText(WelcomeActivity.this, errorInfo.getMessage(), Toast.LENGTH_SHORT).show();
-                            enterMainActivity(false);
-                            return true;
-                        }
-                        return false;
+                    public void onErrorResponse() {
+                        enterMainActivity();
                     }
 
                     @Override
-                    public boolean onDataCorrupted(Throwable e) {
-                        enterMainActivity(false);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onNetworkError(Throwable e) {
-                        enterMainActivity(false);
-                        return false;
+                    public boolean onErrorDataResponse(int statusCode, Result errorInfo) {
+                        Toast.makeText(WelcomeActivity.this, errorInfo.getMessage(), Toast.LENGTH_SHORT).show();
+                        return true;
                     }
                 }));
     }
 
-    private void enterMainActivity(boolean login){
+    private void enterMainActivity(){
         Intent intent = new Intent(this, MainActivity.class);
-        if(login)
-            intent.putExtra(MainActivity.BUNDLE_KEY_UPDATE_USER_INFO, true);
         startActivity(intent);
         finish();
     }

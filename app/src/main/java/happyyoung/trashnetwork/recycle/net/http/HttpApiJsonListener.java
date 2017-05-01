@@ -1,6 +1,7 @@
 package happyyoung.trashnetwork.recycle.net.http;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.gson.JsonSyntaxException;
 
@@ -15,6 +16,12 @@ public abstract class HttpApiJsonListener<T extends Result> implements HttpListe
     private final Class<T> resultType;
     private Result parsedData;
 
+    @Override
+    public void onResponse() {}
+
+    @Override
+    public void onErrorResponse() {}
+
     Result getParsedData() {
         return parsedData;
     }
@@ -23,27 +30,29 @@ public abstract class HttpApiJsonListener<T extends Result> implements HttpListe
         this.resultType = resultType;
     }
 
-    public abstract void onResponse(T data);
+    public abstract void onDataResponse(T data);
 
     @Override
-    public final void onResponse(@NonNull byte[] data) throws DataCorruptionException {
+    public void onDataResponse(@NonNull byte[] data) throws DataCorruptionException {
         try {
-            parsedData = GsonUtil.getGson().fromJson(new String(data), resultType);
-            onResponse((T)parsedData);
+            String dataStr = new String(data);
+            Log.i(HttpApiRequest.TAG, "Received data: " + dataStr);
+            parsedData = GsonUtil.getGson().fromJson(dataStr, resultType);
+            onDataResponse((T)parsedData);
         }catch (JsonSyntaxException jse){
             throw new DataCorruptionException(jse.getMessage(), jse);
         }
     }
 
-    public boolean onErrorResponse(int statusCode, Result errorInfo){
+    public boolean onErrorDataResponse(int statusCode, Result errorInfo){
         return false;
     }
 
     @Override
-    public final boolean onErrorResponse(int statusCode, @NonNull byte[] data) throws DataCorruptionException {
+    public final boolean onErrorDataResponse(int statusCode, @NonNull byte[] data) throws DataCorruptionException {
         try {
             parsedData = GsonUtil.getGson().fromJson(new String(data), Result.class);
-            return onErrorResponse(statusCode, parsedData);
+            return onErrorDataResponse(statusCode, parsedData);
         }catch (JsonSyntaxException jse){
             throw new DataCorruptionException(jse.getMessage(), jse);
         }

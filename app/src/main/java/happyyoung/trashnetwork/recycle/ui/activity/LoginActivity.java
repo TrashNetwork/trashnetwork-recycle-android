@@ -12,6 +12,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -26,6 +27,7 @@ import butterknife.OnClick;
 import happyyoung.trashnetwork.recycle.Application;
 import happyyoung.trashnetwork.recycle.R;
 import happyyoung.trashnetwork.recycle.database.model.LoginUserRecord;
+import happyyoung.trashnetwork.recycle.model.User;
 import happyyoung.trashnetwork.recycle.net.PublicResultCode;
 import happyyoung.trashnetwork.recycle.net.http.HttpApi;
 import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonListener;
@@ -45,10 +47,11 @@ public class LoginActivity extends AppCompatActivity {
 
     @BindView(R.id.btn_sign_in) Button btnSignIn;
     @BindView(R.id.btn_sign_up) Button btnSignUp;
-    @BindView(R.id.email_view_area) View emailView;
+    @BindView(R.id.signup_extra_view_area) View emailView;
     @BindView(R.id.edit_user_name) AutoCompleteTextView editUserName;
     @BindView(R.id.edit_password) EditText editPassword;
     @BindView(R.id.edit_email) EditText editEmail;
+    @BindView(R.id.radiogroup_account_type) RadioGroup rgAccountType;
     @BindView(R.id.progress_signin) ProgressBar progressBar;
 
     private int status = STATUS_SIGNIN;
@@ -96,6 +99,15 @@ public class LoginActivity extends AppCompatActivity {
         String userName = editUserName.getText().toString();
         String password = editPassword.getText().toString();
         String email = editEmail.getText().toString();
+        char accountType = User.USER_TYPE_NORMAL_USER;
+        switch (rgAccountType.getCheckedRadioButtonId()){
+            case R.id.radiobtn_normal_user:
+                accountType = User.USER_TYPE_NORMAL_USER;
+                break;
+            case R.id.radiobtn_garbage_collector:
+                accountType = User.USER_TYPE_GARBAGE_COLLECTOR;
+                break;
+        }
 
         if(userName.isEmpty()){
             editUserName.setError(STR_ERROR_FIELD_REQUIRED);
@@ -122,7 +134,7 @@ public class LoginActivity extends AppCompatActivity {
                 signIn(userName, password);
                 break;
             case STATUS_SIGNUP:
-                signUp(userName, password, email);
+                signUp(userName, password, email, accountType);
                 break;
         }
     }
@@ -132,19 +144,22 @@ public class LoginActivity extends AppCompatActivity {
         onLoginStart();
         HttpApi.startRequest(new HttpApiJsonRequest(this, HttpApi.getApiUrl(HttpApi.AccountApi.LOGIN), Request.Method.PUT, null,
                 request, new HttpApiJsonListener<LoginResult>(LoginResult.class) {
-                    @Override
-                    public void onResponse(LoginResult data) {
-                        GlobalInfo.token = data.getToken();
-                        GlobalInfo.user = data.getUser();
-                        GlobalInfo.user.setUserName(userName);
-                        Toast.makeText(LoginActivity.this, data.getMessage(), Toast.LENGTH_SHORT).show();
-                        onLoginFinished();
-                        onLoginSuccess();
-                    }
+            @Override
+            public void onResponse() {
+                onLoginFinished();
+            }
 
             @Override
-            public boolean onErrorResponse(int statusCode, Result errorInfo) {
-                onLoginFinished();
+            public void onDataResponse(LoginResult data) {
+                GlobalInfo.token = data.getToken();
+                GlobalInfo.user = data.getUser();
+                GlobalInfo.user.setUserName(userName);
+                Toast.makeText(LoginActivity.this, data.getMessage(), Toast.LENGTH_SHORT).show();
+                onLoginSuccess();
+            }
+
+            @Override
+            public boolean onErrorDataResponse(int statusCode, Result errorInfo) {
                 switch (errorInfo.getResultCode()){
                     case PublicResultCode.USER_NOT_EXIST:
                         editUserName.setError(errorInfo.getMessage());
@@ -153,30 +168,23 @@ public class LoginActivity extends AppCompatActivity {
                         editPassword.setError(errorInfo.getMessage());
                         return true;
                 }
-                return super.onErrorResponse(statusCode, errorInfo);
-            }
-
-            @Override
-            public boolean onDataCorrupted(Throwable e) {
-                onLoginFinished();
-                return super.onDataCorrupted(e);
-            }
-
-            @Override
-            public boolean onNetworkError(Throwable e) {
-                onLoginFinished();
-                return super.onNetworkError(e);
+                return false;
             }
         }));
     }
 
-    private void signUp(final String userName, String password, String email){
-        RegisterRequest request = new RegisterRequest(userName, password, email);
+    private void signUp(final String userName, String password, String email, char accountType){
+        RegisterRequest request = new RegisterRequest(userName, password, email, accountType);
         onLoginStart();
         HttpApi.startRequest(new HttpApiJsonRequest(this, HttpApi.getApiUrl(HttpApi.AccountApi.REGISTER), Request.Method.POST, null,
                 request, new HttpApiJsonListener<LoginResult>(LoginResult.class) {
             @Override
-            public void onResponse(LoginResult data) {
+            public void onResponse() {
+                onLoginFinished();
+            }
+
+            @Override
+            public void onDataResponse(LoginResult data) {
                 GlobalInfo.token = data.getToken();
                 GlobalInfo.user = data.getUser();
                 GlobalInfo.user.setUserName(userName);
@@ -186,8 +194,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public boolean onErrorResponse(int statusCode, Result errorInfo) {
-                onLoginFinished();
+            public boolean onErrorDataResponse(int statusCode, Result errorInfo) {
                 switch (errorInfo.getResultCode()){
                     case PublicResultCode.USER_NAME_USED:
                         editUserName.setError(errorInfo.getMessage());
@@ -200,19 +207,7 @@ public class LoginActivity extends AppCompatActivity {
                         editEmail.setError(errorInfo.getMessage());
                         return true;
                 }
-                return super.onErrorResponse(statusCode, errorInfo);
-            }
-
-            @Override
-            public boolean onDataCorrupted(Throwable e) {
-                onLoginFinished();
-                return super.onDataCorrupted(e);
-            }
-
-            @Override
-            public boolean onNetworkError(Throwable e) {
-                onLoginFinished();
-                return super.onNetworkError(e);
+                return false;
             }
         }));
     }

@@ -82,28 +82,15 @@ public class NewFeedbackActivity extends AppCompatActivity {
         HttpApi.startRequest(new HttpApiJsonRequest(this, HttpApi.getApiUrl(HttpApi.FeedbackApi.POST_FEEDBACK), Request.Method.POST,
                 token, request, new HttpApiJsonListener<Result>(Result.class) {
             @Override
-            public void onResponse(Result data) {
+            public void onDataResponse(Result data) {
                 pd.dismiss();
                 Toast.makeText(NewFeedbackActivity.this, data.getMessage(), Toast.LENGTH_SHORT).show();
                 finish();
             }
 
             @Override
-            public boolean onErrorResponse(int statusCode, Result errorInfo) {
+            public void onErrorResponse() {
                 pd.dismiss();
-                return super.onErrorResponse(statusCode, errorInfo);
-            }
-
-            @Override
-            public boolean onDataCorrupted(Throwable e) {
-                pd.dismiss();
-                return super.onDataCorrupted(e);
-            }
-
-            @Override
-            public boolean onNetworkError(Throwable e) {
-                pd.dismiss();
-                return super.onNetworkError(e);
             }
         }));
     }

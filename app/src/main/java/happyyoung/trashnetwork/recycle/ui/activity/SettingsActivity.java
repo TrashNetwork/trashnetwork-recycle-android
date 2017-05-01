@@ -76,29 +76,16 @@ public class SettingsActivity extends AppCompatActivity {
         HttpApi.startRequest(new HttpApiJsonRequest(SettingsActivity.this, HttpApi.getApiUrl(HttpApi.AccountApi.LOGOUT), Request.Method.DELETE, GlobalInfo.token, null,
                 new HttpApiJsonListener<Result>(Result.class) {
                     @Override
-                    public void onResponse(Result data) {
+                    public void onResponse() {
                         pd.dismiss();
                         afterLogout();
                     }
 
                     @Override
-                    public boolean onErrorResponse(int statusCode, Result errorInfo) {
-                        pd.dismiss();
-                        afterLogout();
-                        return true;
-                    }
+                    public void onDataResponse(Result data) {}
 
                     @Override
-                    public boolean onDataCorrupted(Throwable e) {
-                        pd.dismiss();
-                        afterLogout();
-                        return true;
-                    }
-
-                    @Override
-                    public boolean onNetworkError(Throwable e) {
-                        pd.dismiss();
-                        afterLogout();
+                    public boolean onErrorDataResponse(int statusCode, Result errorInfo) {
                         return true;
                     }
                 }));

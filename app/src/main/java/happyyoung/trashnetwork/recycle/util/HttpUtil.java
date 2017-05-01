@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -22,22 +23,30 @@ import happyyoung.trashnetwork.recycle.net.model.result.UserResult;
  * Created by shengyun-zhou <GGGZ-1101-28@Live.cn> on 2017-03-26
  */
 public class HttpUtil {
-    public static void updateUserInfo(final Context context){
+    public static void updateUserInfo(final Context context, @Nullable HttpApiJsonListener<UserResult> listener){
+        if(listener == null){
+            listener = new HttpApiJsonListener<UserResult>(UserResult.class) {
+                @Override
+                public void onDataResponse(UserResult data) {
+                    String userName = GlobalInfo.user.getUserName();
+                    GlobalInfo.user = data.getUser();
+                    GlobalInfo.user.setUserName(userName);
+                    Intent intent = new Intent(Application.ACTION_USER_UPDATE);
+                    intent.addCategory(context.getPackageName());
+                    context.sendBroadcast(intent);
+                }
+            };
+        }
+
         HttpApi.startRequest(new HttpApiJsonRequest(context, HttpApi.getApiUrl(HttpApi.AccountApi.SELF_INFO), Request.Method.GET, GlobalInfo.token,
-                null, new HttpApiJsonListener<UserResult>(UserResult.class) {
-            @Override
-            public void onResponse(UserResult data) {
-                String userName = GlobalInfo.user.getUserName();
-                GlobalInfo.user = data.getUser();
-                GlobalInfo.user.setUserName(userName);
-                Intent intent = new Intent(Application.ACTION_USER_UPDATE);
-                intent.addCategory(context.getPackageName());
-                context.sendBroadcast(intent);
-            }
-        }));
+                null, listener));
     }
 
-    public static void recycleBottle(final Context context, long trashId, int quantity){
+    public static void updateUserInfo(Context context){
+        updateUserInfo(context, null);
+    }
+
+    public static void recycleBottle(final Context context, long recyclePointId, int quantity){
         final AlertDialog alertDialog = new AlertDialog.Builder(context)
                 .setTitle(R.string.error)
                 .setPositiveButton(R.string.action_ok, null)
@@ -49,7 +58,7 @@ public class HttpUtil {
             alertDialog.show();
             return;
         }
-        RecycleBottleRequest request = new RecycleBottleRequest(trashId, quantity,
+        RecycleBottleRequest request = new RecycleBottleRequest(recyclePointId, quantity,
                 GlobalInfo.currentLocation.getLongitude(), GlobalInfo.currentLocation.getLatitude());
         final ProgressDialog pd = new ProgressDialog(context);
         pd.setMessage(context.getString(R.string.alert_waiting));
@@ -58,8 +67,12 @@ public class HttpUtil {
         HttpApi.startRequest(new HttpApiJsonRequest(context, HttpApi.getApiUrl(HttpApi.CreditRecordApi.POST_RECORD_BY_BOTTLE_RECYCLE), Request.Method.POST, GlobalInfo.token, request,
                 new HttpApiJsonListener<RecycleResult>(RecycleResult.class) {
                     @Override
-                    public void onResponse(RecycleResult data) {
+                    public void onResponse() {
                         pd.dismiss();
+                    }
+
+                    @Override
+                    public void onDataResponse(RecycleResult data) {
                         updateUserInfo(context);
                         alertDialog.setTitle(R.string.action_done);
                         alertDialog.setMessage(String.format(context.getString(R.string.gain_credit_format), data.getCredit()));
@@ -67,23 +80,10 @@ public class HttpUtil {
                     }
 
                     @Override
-                    public boolean onErrorResponse(int statusCode, Result errorInfo) {
-                        pd.dismiss();
+                    public boolean onErrorDataResponse(int statusCode, Result errorInfo) {
                         alertDialog.setMessage(errorInfo.getMessage());
                         alertDialog.show();
                         return true;
-                    }
-
-                    @Override
-                    public boolean onDataCorrupted(Throwable e) {
-                        pd.dismiss();
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onNetworkError(Throwable e) {
-                        pd.dismiss();
-                        return false;
                     }
                 }));
     }

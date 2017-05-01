@@ -17,19 +17,20 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import happyyoung.trashnetwork.recycle.Application;
 import happyyoung.trashnetwork.recycle.R;
 import happyyoung.trashnetwork.recycle.net.DataCorruptionException;
+import happyyoung.trashnetwork.recycle.ui.activity.LoginActivity;
 import happyyoung.trashnetwork.recycle.util.GlobalInfo;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by shengyun-zhou <GGGZ-1101-28@Live.cn> on 2017-02-12
  */
 public abstract class HttpApiRequest extends Request {
-    private static final String TAG = "HTTP API";
+    public static final String TAG = "HTTP API";
     private Context mContext;
     private HttpListener mListener;
     private Map<String, String> mHeaderMap = new HashMap<>();
@@ -38,6 +39,10 @@ public abstract class HttpApiRequest extends Request {
         super(method, url, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                if(listener != null)
+                    listener.onResponse();
+                if(listener != null)
+                    listener.onErrorResponse();
                 if(error.networkResponse == null){
                     Log.e(TAG, "Network error", error.getCause());
                     if(listener == null || !listener.onNetworkError(error.getCause())){
@@ -50,7 +55,7 @@ public abstract class HttpApiRequest extends Request {
                         if(data == null)
                             data = new byte[0];
                         if(listener != null){
-                            if(listener.onErrorResponse(error.networkResponse.statusCode, data))
+                            if(listener.onErrorDataResponse(error.networkResponse.statusCode, data))
                                 return;
                         }
                     }catch (DataCorruptionException dce){
@@ -85,9 +90,11 @@ public abstract class HttpApiRequest extends Request {
 
     @Override
     protected void deliverResponse(Object response) {
+        if(mListener != null)
+            mListener.onResponse();
         try {
             if (mListener != null)
-                mListener.onResponse((byte[])response);
+                mListener.onDataResponse((byte[])response);
         } catch (DataCorruptionException e) {
             processCorruptData(mContext, mListener, e);
         }

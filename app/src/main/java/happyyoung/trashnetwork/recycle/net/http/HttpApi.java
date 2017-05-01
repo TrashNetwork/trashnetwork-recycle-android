@@ -43,7 +43,12 @@ public class HttpApi {
         public static final String POST_FEEDBACK = "recycle/feedback/new_feekback";
     }
 
-    public static class PublicApi {
-        public static final String ALL_TRASHES = "public/trash/all_trashes";
+    public static class RecyclePointApi{
+        public static final String ALL_POINTS = "recycle/recycle_point/all_points";
+    }
+
+    public static class RecycleRecordApi{
+        public static final String NEW_RECORD = "recycle/recycle_record/new_record";
+        public static final String QUERY_RECORD = "recycle/recycle_record";
     }
 }

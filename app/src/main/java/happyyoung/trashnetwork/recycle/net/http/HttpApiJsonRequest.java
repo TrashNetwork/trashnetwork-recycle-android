@@ -20,9 +20,21 @@ public class HttpApiJsonRequest extends HttpApiRequest {
                               final HttpApiJsonListener listener) {
         super(context, url, method, token, new HttpListener() {
             @Override
-            public void onResponse(@NonNull byte[] data) throws DataCorruptionException {
+            public void onResponse() {
                 if(listener != null)
-                    listener.onResponse(data);
+                    listener.onResponse();
+            }
+
+            @Override
+            public void onDataResponse(@NonNull byte[] data) throws DataCorruptionException {
+                if(listener != null)
+                    listener.onDataResponse(data);
+            }
+
+            @Override
+            public void onErrorResponse() {
+                if(listener != null)
+                    listener.onErrorResponse();
             }
 
             @Override
@@ -31,12 +43,13 @@ public class HttpApiJsonRequest extends HttpApiRequest {
             }
 
             @Override
-            public boolean onErrorResponse(int statusCode, @NonNull byte[] data) throws DataCorruptionException {
+            public boolean onErrorDataResponse(int statusCode, @NonNull byte[] data) throws DataCorruptionException {
                 if(listener != null){
-                    if(listener.onErrorResponse(statusCode, data))
+                    if(listener.onErrorDataResponse(statusCode, data))
                         return true;
-                    if(statusCode == 401 && listener.getParsedData().getResultCode() == 401)
+                    if(statusCode == 401 && listener.getParsedData().getResultCode() == 401){
                         requireLoginAgain(context);
+                    }
                     else if(statusCode != 500)
                         showError(context, listener.getParsedData().getMessage());
                     else

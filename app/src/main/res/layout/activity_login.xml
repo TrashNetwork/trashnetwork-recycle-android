@@ -153,41 +153,71 @@
 
                     </RelativeLayout>
 
-                    <RelativeLayout android:id="@+id/email_view_area"
+                    <LinearLayout  android:id="@+id/signup_extra_view_area"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/item_padding"
+                        android:orientation="vertical"
                         android:visibility="gone">
 
-                        <ImageView
-                            android:id="@+id/icon_email_signup"
-                            android:layout_width="@dimen/normal_icon_size"
-                            android:layout_height="@dimen/normal_icon_size"
-                            android:layout_marginRight="@dimen/activity_horizontal_margin"
-                            android:layout_centerVertical="true"
-                            android:tint="@color/colorAccent"
-                            app:srcCompat="@drawable/ic_email" />
-
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edit_email"
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_toEndOf="@+id/icon_email_signup"
-                            android:imeOptions="actionDone"
-                            android:inputType="textEmailAddress"
-                            android:maxLines="1"
-                            android:layout_centerVertical="true"
-                            app:met_textColorHint="@color/grey_500"
-                            app:met_underlineColor="@color/grey_500"
-                            android:hint="@string/prompt_email"
-                            app:met_primaryColor="@color/colorAccent"
-                            app:met_floatingLabelText="@string/prompt_email"
-                            app:met_floatingLabel="highlight"
-                            app:met_clearButton="true"
-                            android:maxLength="20" />
+                            android:layout_marginBottom="@dimen/item_padding">
 
+                            <ImageView
+                                android:id="@+id/icon_email_signup"
+                                android:layout_width="@dimen/normal_icon_size"
+                                android:layout_height="@dimen/normal_icon_size"
+                                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                                android:layout_marginBottom="@dimen/item_padding_small"
+                                android:layout_centerVertical="true"
+                                android:tint="@color/colorAccent"
+                                app:srcCompat="@drawable/ic_email" />
 
-                    </RelativeLayout>
+                            <com.rengwuxian.materialedittext.MaterialEditText
+                                android:id="@+id/edit_email"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toEndOf="@+id/icon_email_signup"
+                                android:imeOptions="actionDone"
+                                android:inputType="textEmailAddress"
+                                android:maxLines="1"
+                                android:layout_centerVertical="true"
+                                app:met_textColorHint="@color/grey_500"
+                                app:met_underlineColor="@color/grey_500"
+                                android:hint="@string/prompt_email"
+                                app:met_primaryColor="@color/colorAccent"
+                                app:met_floatingLabelText="@string/prompt_email"
+                                app:met_floatingLabel="highlight"
+                                app:met_clearButton="true"
+                                android:maxLength="20" />
+
+                        </RelativeLayout>
+
+                        <RadioGroup
+                            android:id="@+id/radiogroup_account_type"
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="@dimen/item_padding_small">
+
+                            <RadioButton
+                                android:id="@+id/radiobtn_normal_user"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/normal_user"
+                                android:checked="true"
+                                android:layout_marginEnd="@dimen/item_padding" />
+
+                            <RadioButton
+                                android:id="@+id/radiobtn_garbage_collector"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/garbage_collector" />
+                        </RadioGroup>
+
+                    </LinearLayout>
 
                     <Button
                         android:id="@+id/btn_sign_in"

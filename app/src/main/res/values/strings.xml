@@ -12,6 +12,7 @@
     <string name="action_map">Map</string>
     <string name="action_credit_rank">Credit Rank</string>
     <string name="action_credit_record">Credit Record</string>
+    <string name="action_recycle_record">Recycle Record</string>
     <string name="action_feedback">Feedback</string>
     <string name="action_scan_qr_code">Scan QR Code</string>
     <string name="action_exit">Exit</string>
@@ -21,6 +22,8 @@
     <string name="prompt_email">Email</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_up">Sign up</string>
+    <string name="normal_user">Normal User</string>
+    <string name="garbage_collector">Garbage Collector</string>
     <string name="error_illegal_phone_number">Illegal phone number</string>
     <string name="error_illegal_password_length">Password is too long or too short</string>
     <string name="error_field_required">This field is required</string>
@@ -62,4 +65,5 @@
         please try again after your location is updated.</string>
     <string name="gain_credit_format">You have gained %d credits</string>
     <string name="action_recycle_bottle">Recycle Bottle</string>
+    <string name="bottle">Bottle</string>
 </resources>

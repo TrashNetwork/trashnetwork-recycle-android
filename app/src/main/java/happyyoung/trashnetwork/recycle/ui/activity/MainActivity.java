@@ -35,6 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import happyyoung.trashnetwork.recycle.Application;
 import happyyoung.trashnetwork.recycle.R;
+import happyyoung.trashnetwork.recycle.model.User;
 import happyyoung.trashnetwork.recycle.service.LocationService;
 import happyyoung.trashnetwork.recycle.ui.fragment.FeedbackFragment;
 import happyyoung.trashnetwork.recycle.ui.fragment.MapFragment;
@@ -43,7 +44,6 @@ import happyyoung.trashnetwork.recycle.util.HttpUtil;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    public static final String BUNDLE_KEY_UPDATE_USER_INFO = "UpdateUserInfo";
     public static final String QRCODE_ACTION_RECYCLE_BOTTLE = "Recycle bottle";
 
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -99,8 +99,6 @@ public class MainActivity extends AppCompatActivity
         filter = new IntentFilter(Application.ACTION_USER_UPDATE);
         filter.addCategory(getPackageName());
         registerReceiver(userInfoReceiver, filter);
-        if(getIntent().getBooleanExtra(BUNDLE_KEY_UPDATE_USER_INFO, false))
-            HttpUtil.updateUserInfo(this);
     }
 
     private void exitApp(){
@@ -124,7 +122,7 @@ public class MainActivity extends AppCompatActivity
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 }
             });
-            navView.getMenu().findItem(R.id.nav_credit_record).setVisible(false);
+            navView.getMenu().setGroupVisible(R.id.nav_group_user, false);
         }else{
             userPortrait.setShapeColor(Application.generateColorFromStr(GlobalInfo.user.getUserName()));
             userPortrait.setLetter(GlobalInfo.user.getUserName());
@@ -132,7 +130,11 @@ public class MainActivity extends AppCompatActivity
             txtCredit.setText(String.format(getString(R.string.credit_format), GlobalInfo.user.getCredit()));
             txtPhoneNumber.setText(GlobalInfo.user.getUserName());
             userPortrait.setOnClickListener(null);
-            navView.getMenu().findItem(R.id.nav_credit_record).setVisible(true);
+            navView.getMenu().setGroupVisible(R.id.nav_group_user, true);
+            if(GlobalInfo.user.getAccountType() == User.USER_TYPE_GARBAGE_COLLECTOR)
+                navView.getMenu().findItem(R.id.nav_recycle_record).setVisible(true);
+            else
+                navView.getMenu().findItem(R.id.nav_recycle_record).setVisible(false);
         }
     }
 
@@ -173,14 +175,14 @@ public class MainActivity extends AppCompatActivity
                 return;
             switch (parsedData.getAsJsonObject().get("action").getAsString()){
                 case QRCODE_ACTION_RECYCLE_BOTTLE:
-                    if(!parsedData.getAsJsonObject().has("trash_id"))
+                    if(!parsedData.getAsJsonObject().has("recycle_point_id"))
                         return;
                     if(GlobalInfo.user == null){
                         startActivity(new Intent(this, LoginActivity.class));
                         Toast.makeText(this, R.string.alert_login_first, Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    recycleBottle(parsedData.getAsJsonObject().get("trash_id").getAsLong());
+                    recycleBottle(parsedData.getAsJsonObject().get("recycle_point_id").getAsLong());
                     return;
             }
         }catch (Exception e){
@@ -188,7 +190,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void recycleBottle(final long trashId){
+    private void recycleBottle(final long recyclePointId){
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_recycle_bottle, null, false);
         final TextView txtQuantity = ButterKnife.findById(dialogView, R.id.txt_quantity);
         final SeekBar seekQuantity = ButterKnife.findById(dialogView, R.id.seekbar_quantity);
@@ -211,7 +213,7 @@ public class MainActivity extends AppCompatActivity
                 .setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        HttpUtil.recycleBottle(MainActivity.this, trashId, seekQuantity.getProgress() + 1);
+                        HttpUtil.recycleBottle(MainActivity.this, recyclePointId, seekQuantity.getProgress() + 1);
                     }
                 })
                 .create();
@@ -254,6 +256,9 @@ public class MainActivity extends AppCompatActivity
                 hideAllFragment(ft);
                 ft.show(feedbackFragment);
                 ft.commit();
+                break;
+            case R.id.nav_recycle_record:
+                startActivity(new Intent(this, RecycleRecordActivity.class));
                 break;
             case R.id.nav_scan_qrcode:
                 scanQRCode();

@@ -34,19 +34,18 @@
             android:value="@string/TN_HTTP_API_BASE_URL_V1" />
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="@string/AMAP_LBS_API_KEY"/>
+            android:value="@string/AMAP_LBS_API_KEY" />
 
         <activity
             android:name=".ui.activity.WelcomeActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <service android:name="com.amap.api.location.APSService"/>
+        <service android:name="com.amap.api.location.APSService" />
         <service
             android:name=".service.LocationService"
             android:exported="false" />
@@ -70,8 +69,11 @@
         <activity
             android:name=".ui.activity.CreditRecordActivity"
             android:label="@string/action_credit_record" />
-        <activity android:name=".ui.activity.NewFeedbackActivity"
-            android:label="@string/action_new_feedback"/>
+        <activity
+            android:name=".ui.activity.NewFeedbackActivity"
+            android:label="@string/action_new_feedback" />
+        <activity android:name=".ui.activity.RecycleRecordActivity"
+            android:label="@string/action_recycle_record"/>
     </application>
 
 </manifest>

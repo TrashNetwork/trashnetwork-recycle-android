@@ -73,7 +73,7 @@
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
-        android:id="@+id/trash_view_area"
+        android:id="@+id/recycle_point_view_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/item_padding"
@@ -89,15 +89,14 @@
             android:padding="@dimen/item_padding"
             android:orientation="vertical">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
 
                 <ImageView android:id="@+id/icon_trash"
                     android:layout_width="@dimen/normal_icon_size"
                     android:layout_height="@dimen/normal_icon_size"
-                    android:layout_gravity="center_vertical"
+                    android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/item_padding"
                     android:tint="@color/light_green_500"
                     app:srcCompat="@drawable/ic_delete_32dp" />
@@ -105,27 +104,88 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_toEndOf="@+id/icon_trash"
+                    android:layout_toStartOf="@+id/btn_recycle">
 
-                    <TextView android:id="@+id/txt_trash_name"
+                    <TextView android:id="@+id/txt_recycle_point_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:text="Trash #1"
+                        android:text="Recycle Point #1"
                         android:textSize="@dimen/normal_text_size"
                         android:textColor="@android:color/black"/>
 
                     <TextView
-                        android:id="@+id/txt_trash_desc"
+                        android:id="@+id/txt_recycle_point_desc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/unknown_location"
                         android:textSize="@dimen/small_text_size"/>
 
                 </LinearLayout>
+
+                <ImageButton android:id="@+id/btn_recycle"
+                    android:layout_width="@dimen/normal_icon_size"
+                    android:layout_height="@dimen/normal_icon_size"
+                    app:srcCompat="@drawable/ic_broom"
+                    android:tint="@color/colorAccent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/item_padding"
+                    style="@style/AppTheme.ImageButton"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+            <LinearLayout android:id="@+id/recycle_point_info_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/separator_size"
+                    android:layout_marginTop="@dimen/item_padding_small"
+                    android:layout_marginBottom="@dimen/item_padding_small"
+                    android:background="@color/grey_300"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/normal_text_size"
+                        android:textColor="@color/teal_500"
+                        android:text="@string/bottle"/>
+
+                    <TextView android:id="@+id/txt_bottle_num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/normal_text_size"
+                        android:textColor="@android:color/black"
+                        android:text="6"
+                        android:layout_alignParentEnd="true"/>
+
+                </RelativeLayout>
+
             </LinearLayout>
+
         </LinearLayout>
 
     </android.support.v7.widget.CardView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btn_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fabSize="normal"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        app:srcCompat="@drawable/ic_refresh"
+        android:tint="@android:color/white"/>
 
 </RelativeLayout>

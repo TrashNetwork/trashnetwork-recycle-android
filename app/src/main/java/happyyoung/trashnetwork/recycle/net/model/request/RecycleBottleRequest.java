@@ -4,24 +4,24 @@ package happyyoung.trashnetwork.recycle.net.model.request;
  * Created by shengyun-zhou <GGGZ-1101-28@Live.cn> on 2017-03-28
  */
 public class RecycleBottleRequest {
-    private long trashId;
+    private long recyclePointId;
     private int quantity;
     private double longitude;
     private double latitude;
 
-    public RecycleBottleRequest(long trashId, int quantity, double longitude, double latitude) {
-        this.trashId = trashId;
+    public RecycleBottleRequest(long recyclePointId, int quantity, double longitude, double latitude) {
+        this.recyclePointId = recyclePointId;
         this.quantity = quantity;
         this.longitude = longitude;
         this.latitude = latitude;
     }
 
-    public long getTrashId() {
-        return trashId;
+    public long getRecyclePointId() {
+        return recyclePointId;
     }
 
-    public void setTrashId(long trashId) {
-        this.trashId = trashId;
+    public void setRecyclePointId(long recyclePointId) {
+        this.recyclePointId = recyclePointId;
     }
 
     public int getQuantity() {

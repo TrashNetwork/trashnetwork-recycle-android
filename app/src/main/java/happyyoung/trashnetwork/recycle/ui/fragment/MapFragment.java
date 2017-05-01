@@ -6,11 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
@@ -22,40 +25,52 @@ import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.android.volley.Request;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import happyyoung.trashnetwork.recycle.Application;
 import happyyoung.trashnetwork.recycle.R;
-import happyyoung.trashnetwork.recycle.model.Trash;
+import happyyoung.trashnetwork.recycle.model.RecyclePoint;
 import happyyoung.trashnetwork.recycle.net.http.HttpApi;
 import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonListener;
 import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonRequest;
-import happyyoung.trashnetwork.recycle.net.model.result.TrashListResult;
+import happyyoung.trashnetwork.recycle.net.model.request.RecyclePointCleanRequest;
+import happyyoung.trashnetwork.recycle.net.model.result.RecyclePointListResult;
+import happyyoung.trashnetwork.recycle.net.model.result.Result;
+import happyyoung.trashnetwork.recycle.ui.activity.MainActivity;
 import happyyoung.trashnetwork.recycle.util.DateTimeUtil;
 import happyyoung.trashnetwork.recycle.util.GlobalInfo;
 import happyyoung.trashnetwork.recycle.util.ImageUtil;
 
 public class MapFragment extends Fragment {
     private static final String BUNDLE_KEY_MARKER_TYPE = "MarkerType";
-    private static final String BUNDLE_KEY_TRASH_ID = "TrashID";
+    private static final String BUNDLE_KEY_RECYCLE_POINT_ID = "RecyclePointID";
     private static final int MARKER_TYPE_USER = 1;
-    private static final int MARKER_TYPE_TRASH = 2;
+    private static final int MARKER_TYPE_RECYCLE_POINT = 2;
 
     private View rootView;
     @BindView(R.id.amap_view) MapView mapView;
     @BindView(R.id.user_location_area) View userLocationView;
     @BindView(R.id.txt_user_location) TextView txtUserLocation;
     @BindView(R.id.txt_user_update_time) TextView txtUserUpdateTime;
-    @BindView(R.id.trash_view_area) View trashView;
-    @BindView(R.id.txt_trash_name) TextView txtTrashName;
-    @BindView(R.id.txt_trash_desc) TextView txtTrashDesc;
+    @BindView(R.id.recycle_point_view_area) View recyclePointView;
+    @BindView(R.id.txt_recycle_point_name) TextView txtRecyclePointName;
+    @BindView(R.id.txt_recycle_point_desc) TextView txtRecyclePointDesc;
+    @BindView(R.id.recycle_point_info_view) View recyclePointInfoView;
+    @BindView(R.id.btn_recycle) ImageButton btnRecycle;
+    @BindView(R.id.btn_refresh) FloatingActionButton btnRefresh;
+    @BindView(R.id.txt_bottle_num) TextView txtBottleNum;
 
     private boolean mapCenterFlag = false;
-    private long currentShowTrashId = -1;
+    private long currentShowRecyclePointId = -1;
     private AMap amap;
     private Marker userMarker;
+    private List<Marker> recyclePointMarkers = new ArrayList<>();
     private LocationReceiver locationReceiver;
+    private UserInfoReceiver userInfoReceiver;
 
     public MapFragment() {
         // Required empty public constructor
@@ -96,21 +111,31 @@ public class MapFragment extends Fragment {
                     case MARKER_TYPE_USER:
                         showUserLocation(true);
                         break;
-                    case MARKER_TYPE_TRASH:
-                        showTrashInfo(bundle.getLong(BUNDLE_KEY_TRASH_ID));
+                    case MARKER_TYPE_RECYCLE_POINT:
+                        showRecyclePointInfo(bundle.getLong(BUNDLE_KEY_RECYCLE_POINT_ID));
                         break;
                 }
                 return true;
             }
         });
 
-        getAllTrashInfo();
-
         locationReceiver = new LocationReceiver();
         IntentFilter filter = new IntentFilter(Application.ACTION_LOCATION);
         filter.addCategory(getContext().getPackageName());
         getContext().registerReceiver(locationReceiver, filter);
 
+        userInfoReceiver = new UserInfoReceiver();
+        filter = new IntentFilter(Application.ACTION_LOGIN);
+        filter.addCategory(getContext().getPackageName());
+        getContext().registerReceiver(userInfoReceiver, filter);
+        filter = new IntentFilter(Application.ACTION_LOGOUT);
+        filter.addCategory(getContext().getPackageName());
+        getContext().registerReceiver(userInfoReceiver, filter);
+        filter = new IntentFilter(Application.ACTION_USER_UPDATE);
+        filter.addCategory(getContext().getPackageName());
+        getContext().registerReceiver(userInfoReceiver, filter);
+
+        getAllRecyclePoint();
         return rootView;
     }
 
@@ -121,29 +146,56 @@ public class MapFragment extends Fragment {
                         GlobalInfo.currentLocation.getLongitude()), 18, 0, 0)));
     }
 
-    @OnClick(R.id.trash_view_area)
-    void onTrashViewClick(View v){
-        Trash t = GlobalInfo.findTrashById(currentShowTrashId);
+    @OnClick(R.id.recycle_point_view_area)
+    void onRecyclePointViewClick(View v){
+        RecyclePoint t = GlobalInfo.findRecyclePointById(currentShowRecyclePointId);
         if(t == null)
             return;
         amap.animateCamera(CameraUpdateFactory.newCameraPosition(
                 new CameraPosition(new LatLng(t.getLatitude(), t.getLongitude()), 18, 0, 0)));
     }
 
-    private void addTrashMarker(){
-        MarkerOptions trashMarkerOpts = new MarkerOptions()
+    @OnClick(R.id.btn_refresh)
+    void onBtnRefreshClick(View v){
+        getAllRecyclePoint();
+    }
+
+    @OnClick(R.id.btn_recycle)
+    void onBtnRecycleClick(View v){
+        final RecyclePointCleanRequest req = new RecyclePointCleanRequest(currentShowRecyclePointId);
+        HttpApi.startRequest(new HttpApiJsonRequest(getActivity(), HttpApi.getApiUrl(HttpApi.RecycleRecordApi.NEW_RECORD), Request.Method.POST, GlobalInfo.token, req,
+                new HttpApiJsonListener<Result>(Result.class) {
+                    @Override
+                    public void onDataResponse(Result data) {
+                        Toast.makeText(getContext(), data.getMessage(), Toast.LENGTH_SHORT).show();
+                        RecyclePoint rp = GlobalInfo.findRecyclePointById(req.getRecyclePointId());
+                        if(rp == null)
+                            return;
+                        if(rp.isBottleRecycle())
+                            rp.setBottleNum(0);
+                        if(currentShowRecyclePointId == req.getRecyclePointId())
+                            showRecyclePointInfo(req.getRecyclePointId());
+                    }
+                }));
+    }
+
+    private void addRecyclePointMarker(){
+        MarkerOptions recyclePointMarkerOpt = new MarkerOptions()
                 .draggable(false)
                 .icon(BitmapDescriptorFactory.fromBitmap(
                         ImageUtil.getBitmapFromDrawable(getContext(), R.drawable.ic_delete_green_32dp)));
-        for(Trash t : GlobalInfo.trashList){
-            if(!t.isBottleRecycle())
+        for(RecyclePoint rp : GlobalInfo.recyclePointList){
+            if(!rp.isBottleRecycle())
                 continue;
-            trashMarkerOpts.position(new LatLng(t.getLatitude(), t.getLongitude()));
-            Marker trashMarker = amap.addMarker(trashMarkerOpts);
+            recyclePointMarkerOpt.position(new LatLng(rp.getLatitude(), rp.getLongitude()));
+            Marker recyclePointMarker = amap.addMarker(recyclePointMarkerOpt);
             Bundle bundle = new Bundle();
-            bundle.putInt(BUNDLE_KEY_MARKER_TYPE, MARKER_TYPE_TRASH);
-            bundle.putLong(BUNDLE_KEY_TRASH_ID, t.getTrashId());
-            trashMarker.setObject(bundle);
+            bundle.putInt(BUNDLE_KEY_MARKER_TYPE, MARKER_TYPE_RECYCLE_POINT);
+            bundle.putLong(BUNDLE_KEY_RECYCLE_POINT_ID, rp.getRecyclePointId());
+            recyclePointMarker.setObject(bundle);
+            recyclePointMarkers.add(recyclePointMarker);
+            if(rp.getRecyclePointId() == currentShowRecyclePointId && recyclePointView.getVisibility() == View.VISIBLE)
+                showRecyclePointInfo(rp.getRecyclePointId());
         }
     }
 
@@ -168,7 +220,7 @@ public class MapFragment extends Fragment {
             ));
             mapCenterFlag = true;
         }
-        if(trashView.getVisibility() == View.VISIBLE)
+        if(recyclePointView.getVisibility() == View.VISIBLE)
             return;
         showUserLocation(false);
     }
@@ -176,7 +228,7 @@ public class MapFragment extends Fragment {
     private void showUserLocation(boolean fromUser){
         if(GlobalInfo.currentLocation == null)
             return;
-        trashView.setVisibility(View.GONE);
+        recyclePointView.setVisibility(View.GONE);
         if(userLocationView.getVisibility() != View.VISIBLE || !fromUser){
             userLocationView.setVisibility(View.VISIBLE);
             txtUserUpdateTime.setText(DateTimeUtil.convertTimestamp(getContext(), GlobalInfo.currentLocation.getUpdateTime(), true, true, true));
@@ -187,24 +239,42 @@ public class MapFragment extends Fragment {
         }
     }
 
-    private void showTrashInfo(long trashId){
-        Trash t = GlobalInfo.findTrashById(trashId);
-        if(t == null)
+    private void showRecyclePointInfo(long recyclePointId){
+        RecyclePoint rp = GlobalInfo.findRecyclePointById(recyclePointId);
+        if(rp == null)
             return;
-        currentShowTrashId = trashId;
+        currentShowRecyclePointId = recyclePointId;
         userLocationView.setVisibility(View.GONE);
-        trashView.setVisibility(View.VISIBLE);
-        txtTrashName.setText(t.getTrashName(getContext()));
-        txtTrashDesc.setText(t.getDescription());
+        recyclePointView.setVisibility(View.VISIBLE);
+        txtRecyclePointName.setText(rp.getRecyclePointName(getContext()));
+        txtRecyclePointDesc.setText(rp.getDescription());
+        if(GlobalInfo.user != null && GlobalInfo.user.getUserId().equals(rp.getOwnerId())){
+            recyclePointInfoView.setVisibility(View.VISIBLE);
+            if(rp.getBottleNum() != null)
+                txtBottleNum.setText(String.valueOf(rp.getBottleNum()));
+            btnRecycle.setVisibility(View.VISIBLE);
+        }else{
+            recyclePointInfoView.setVisibility(View.GONE);
+            btnRecycle.setVisibility(View.GONE);
+        }
     }
 
-    private void getAllTrashInfo(){
-        HttpApi.startRequest(new HttpApiJsonRequest(getActivity(), HttpApi.getApiUrl(HttpApi.PublicApi.ALL_TRASHES), Request.Method.GET,
-                null, null, new HttpApiJsonListener<TrashListResult>(TrashListResult.class) {
+    private void getAllRecyclePoint(){
+        btnRefresh.setEnabled(false);
+        HttpApi.startRequest(new HttpApiJsonRequest(getActivity(), HttpApi.getApiUrl(HttpApi.RecyclePointApi.ALL_POINTS), Request.Method.GET,
+                GlobalInfo.token, null, new HttpApiJsonListener<RecyclePointListResult>(RecyclePointListResult.class) {
             @Override
-            public void onResponse(TrashListResult data) {
-                GlobalInfo.trashList = data.getTrashList();
-                addTrashMarker();
+            public void onResponse() {
+                btnRefresh.setEnabled(true);
+            }
+
+            @Override
+            public void onDataResponse(RecyclePointListResult data) {
+                for(Marker m : recyclePointMarkers)
+                    m.remove();
+                recyclePointMarkers.clear();
+                GlobalInfo.recyclePointList = data.getRecyclePointList();
+                addRecyclePointMarker();
             }
         }));
     }
@@ -213,6 +283,7 @@ public class MapFragment extends Fragment {
     public void onDestroy() {
         mapView.onDestroy();
         getContext().unregisterReceiver(locationReceiver);
+        getContext().unregisterReceiver(userInfoReceiver);
         rootView = null;
         super.onDestroy();
     }
@@ -239,6 +310,13 @@ public class MapFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             updateUserLocation();
+        }
+    }
+
+    private class UserInfoReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            getAllRecyclePoint();
         }
     }
 }

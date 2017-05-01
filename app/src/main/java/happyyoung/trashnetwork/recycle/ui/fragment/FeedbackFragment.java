@@ -137,7 +137,7 @@ public class FeedbackFragment extends Fragment {
                 DateTimeUtil.getUnixTimestampStr(endTime.getTime()), "" + FEEDBACK_REQUEST_LIMIT);
         HttpApi.startRequest(new HttpApiJsonRequest(getActivity(), url, Request.Method.GET, GlobalInfo.token, null, new HttpApiJsonListener<FeedbackListResult>(FeedbackListResult.class) {
             @Override
-            public void onResponse(FeedbackListResult data) {
+            public void onDataResponse(FeedbackListResult data) {
                 showContentView(true, refresh);
                 if(refresh) {
                     feedbackList.clear();
@@ -155,27 +155,19 @@ public class FeedbackFragment extends Fragment {
             }
 
             @Override
-            public boolean onErrorResponse(int statusCode, Result errorInfo) {
+            public void onErrorResponse() {
                 showContentView(false, refresh);
+            }
+
+            @Override
+            public boolean onErrorDataResponse(int statusCode, Result errorInfo) {
                 if(errorInfo.getResultCode() == PublicResultCode.FEEDBACK_NOT_FOUND) {
                     if(!refresh)
                         feedbackListView.setNumberBeforeMoreIsCalled(-1);
                     else
                         return true;
                 }
-                return super.onErrorResponse(statusCode, errorInfo);
-            }
-
-            @Override
-            public boolean onDataCorrupted(Throwable e) {
-                showContentView(false, refresh);
-                return super.onDataCorrupted(e);
-            }
-
-            @Override
-            public boolean onNetworkError(Throwable e) {
-                showContentView(false, refresh);
-                return super.onNetworkError(e);
+                return super.onErrorDataResponse(statusCode, errorInfo);
             }
         }));
     }

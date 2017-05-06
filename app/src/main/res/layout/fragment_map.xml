@@ -137,7 +137,7 @@
 
             </RelativeLayout>
 
-            <LinearLayout android:id="@+id/recycle_point_info_view"
+            <LinearLayout android:id="@+id/recycle_point_extra_info_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -150,27 +150,125 @@
                     android:layout_marginBottom="@dimen/item_padding_small"
                     android:background="@color/grey_300"/>
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <ImageView
+                        android:layout_width="@dimen/normal_icon_size"
+                        android:layout_height="@dimen/normal_icon_size"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/item_padding"
+                        android:tint="@color/cyan_500"
+                        app:srcCompat="@drawable/ic_recycle_32dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/normal_text_size"
-                        android:textColor="@color/teal_500"
-                        android:text="@string/bottle"/>
+                        android:orientation="vertical"
+                        android:layout_gravity="center_vertical">
 
-                    <TextView android:id="@+id/txt_bottle_num"
-                        android:layout_width="wrap_content"
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/normal_text_size"
+                                android:textColor="@android:color/black"
+                                android:text="@string/bottle"/>
+
+                            <TextView android:id="@+id/txt_bottle_num"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/normal_text_size"
+                                android:textColor="@android:color/black"
+                                android:text="6"
+                                android:layout_alignParentEnd="true"/>
+
+                        </RelativeLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/recycle_point_walk_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/separator_size"
+                    android:layout_marginTop="@dimen/item_padding_small"
+                    android:layout_marginBottom="@dimen/item_padding_small"
+                    android:background="@color/grey_300"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/normal_icon_size"
+                        android:layout_height="@dimen/normal_icon_size"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/item_padding"
+                        android:tint="@color/indigo_500"
+                        app:srcCompat="@drawable/ic_walk_32dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/normal_text_size"
-                        android:textColor="@android:color/black"
-                        android:text="6"
-                        android:layout_alignParentEnd="true"/>
+                        android:layout_gravity="center_vertical"
+                        android:orientation="vertical">
 
-                </RelativeLayout>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
 
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/distance"
+                                android:textSize="@dimen/normal_text_size"
+                                android:textColor="@android:color/black"/>
+
+                            <TextView android:id="@+id/txt_distance"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="150m"
+                                android:layout_alignParentRight="true"
+                                android:textSize="@dimen/normal_text_size"
+                                android:textColor="@android:color/black"/>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/time"
+                                android:textSize="@dimen/normal_text_size"
+                                android:textColor="@android:color/black"/>
+
+                            <TextView android:id="@+id/txt_time_elapse"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="10min"
+                                android:layout_alignParentRight="true"
+                                android:textSize="@dimen/normal_text_size"
+                                android:textColor="@android:color/black"/>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>

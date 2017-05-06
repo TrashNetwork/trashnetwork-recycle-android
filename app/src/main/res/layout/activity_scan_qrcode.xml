@@ -6,13 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".ui.activity.ScanQRCodeActivity">
 
-    <com.journeyapps.barcodescanner.DecoratedBarcodeView
-        android:id="@+id/scanner_dbv"
+    <cn.bingoogolapple.qrcode.zxing.ZXingView
+        android:id="@+id/qrcode_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:zxing_preview_scaling_strategy="fitXY"
-        app:zxing_use_texture_view="true">
-
-    </com.journeyapps.barcodescanner.DecoratedBarcodeView>
+        app:qrcv_animTime="1000"
+        app:qrcv_rectWidth="250dp"
+        app:qrcv_isOnlyDecodeScanBoxArea="true"
+        app:qrcv_isShowTipBackground="true"
+        app:qrcv_qrCodeTipText="@string/tip_scan_qrcode" />
 
 </RelativeLayout>

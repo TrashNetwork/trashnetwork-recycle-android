@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,16 @@ import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
+import com.amap.api.maps.model.Polyline;
+import com.amap.api.maps.model.PolylineOptions;
+import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.route.BusRouteResult;
+import com.amap.api.services.route.DriveRouteResult;
+import com.amap.api.services.route.RideRouteResult;
+import com.amap.api.services.route.RouteSearch;
+import com.amap.api.services.route.WalkPath;
+import com.amap.api.services.route.WalkRouteResult;
+import com.amap.api.services.route.WalkStep;
 import com.android.volley.Request;
 
 import java.util.ArrayList;
@@ -40,7 +51,6 @@ import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonRequest;
 import happyyoung.trashnetwork.recycle.net.model.request.RecyclePointCleanRequest;
 import happyyoung.trashnetwork.recycle.net.model.result.RecyclePointListResult;
 import happyyoung.trashnetwork.recycle.net.model.result.Result;
-import happyyoung.trashnetwork.recycle.ui.activity.MainActivity;
 import happyyoung.trashnetwork.recycle.util.DateTimeUtil;
 import happyyoung.trashnetwork.recycle.util.GlobalInfo;
 import happyyoung.trashnetwork.recycle.util.ImageUtil;
@@ -59,10 +69,13 @@ public class MapFragment extends Fragment {
     @BindView(R.id.recycle_point_view_area) View recyclePointView;
     @BindView(R.id.txt_recycle_point_name) TextView txtRecyclePointName;
     @BindView(R.id.txt_recycle_point_desc) TextView txtRecyclePointDesc;
-    @BindView(R.id.recycle_point_info_view) View recyclePointInfoView;
+    @BindView(R.id.recycle_point_extra_info_view) View recyclePointExtraInfoView;
     @BindView(R.id.btn_recycle) ImageButton btnRecycle;
     @BindView(R.id.btn_refresh) FloatingActionButton btnRefresh;
     @BindView(R.id.txt_bottle_num) TextView txtBottleNum;
+    @BindView(R.id.recycle_point_walk_view) View recyclePointWalkView;
+    @BindView(R.id.txt_distance) TextView txtWalkDistance;
+    @BindView(R.id.txt_time_elapse) TextView txtWalkTime;
 
     private boolean mapCenterFlag = false;
     private long currentShowRecyclePointId = -1;
@@ -71,6 +84,9 @@ public class MapFragment extends Fragment {
     private List<Marker> recyclePointMarkers = new ArrayList<>();
     private LocationReceiver locationReceiver;
     private UserInfoReceiver userInfoReceiver;
+    private Marker walkStartPointMarker;
+    private RouteSearch routeSearch;
+    private Polyline walkPathLine;
 
     public MapFragment() {
         // Required empty public constructor
@@ -107,6 +123,8 @@ public class MapFragment extends Fragment {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 Bundle bundle = (Bundle) marker.getObject();
+                if(bundle == null)
+                    return false;
                 switch (bundle.getInt(BUNDLE_KEY_MARKER_TYPE)){
                     case MARKER_TYPE_USER:
                         showUserLocation(true);
@@ -114,10 +132,13 @@ public class MapFragment extends Fragment {
                     case MARKER_TYPE_RECYCLE_POINT:
                         showRecyclePointInfo(bundle.getLong(BUNDLE_KEY_RECYCLE_POINT_ID));
                         break;
+                    default:
+                        return false;
                 }
                 return true;
             }
         });
+        routeSearch = new RouteSearch(getContext());
 
         locationReceiver = new LocationReceiver();
         IntentFilter filter = new IntentFilter(Application.ACTION_LOCATION);
@@ -248,13 +269,15 @@ public class MapFragment extends Fragment {
         recyclePointView.setVisibility(View.VISIBLE);
         txtRecyclePointName.setText(rp.getRecyclePointName(getContext()));
         txtRecyclePointDesc.setText(rp.getDescription());
+        recyclePointWalkView.setVisibility(View.VISIBLE);
+        searchWalkPath(rp);
         if(GlobalInfo.user != null && GlobalInfo.user.getUserId().equals(rp.getOwnerId())){
-            recyclePointInfoView.setVisibility(View.VISIBLE);
+            recyclePointExtraInfoView.setVisibility(View.VISIBLE);
             if(rp.getBottleNum() != null)
                 txtBottleNum.setText(String.valueOf(rp.getBottleNum()));
             btnRecycle.setVisibility(View.VISIBLE);
         }else{
-            recyclePointInfoView.setVisibility(View.GONE);
+            recyclePointExtraInfoView.setVisibility(View.GONE);
             btnRecycle.setVisibility(View.GONE);
         }
     }
@@ -277,6 +300,71 @@ public class MapFragment extends Fragment {
                 addRecyclePointMarker();
             }
         }));
+    }
+
+    private void searchWalkPath(final RecyclePoint rp){
+        if(GlobalInfo.currentLocation == null)
+            return;
+        final LatLng startPos = new LatLng(GlobalInfo.currentLocation.getLatitude(), GlobalInfo.currentLocation.getLongitude());
+        routeSearch.setRouteSearchListener(new RouteSearch.OnRouteSearchListener() {
+            @Override
+            public void onBusRouteSearched(BusRouteResult busRouteResult, int i) {}
+
+            @Override
+            public void onDriveRouteSearched(DriveRouteResult driveRouteResult, int i) {}
+
+            @Override
+            public void onRideRouteSearched(RideRouteResult rideRouteResult, int i) {}
+
+            @Override
+            @SuppressWarnings("deprecation")
+            public void onWalkRouteSearched(WalkRouteResult walkRouteResult, int rCode) {
+                if(rCode != 1000){
+                    Log.e("AMap route search", "route search failed, response code: " + rCode);
+                    return;
+                }
+                if(walkStartPointMarker == null) {
+                    MarkerOptions opt = new MarkerOptions()
+                            .draggable(false)
+                            .icon(BitmapDescriptorFactory.fromBitmap(ImageUtil.getBitmapFromDrawable(getContext(), R.drawable.ic_source_start_orange_40dp)))
+                            .position(startPos);
+                    walkStartPointMarker = amap.addMarker(opt);
+                }else {
+                    walkStartPointMarker.setPosition(startPos);
+                }
+                WalkPath path = walkRouteResult.getPaths().get(0);
+                List<LatLng> polyLinePoints = new ArrayList<>();
+                polyLinePoints.add(startPos);
+                for(WalkStep ws: path.getSteps()){
+                    for(LatLonPoint llp: ws.getPolyline()) {
+                        polyLinePoints.add(new LatLng(llp.getLatitude(), llp.getLongitude()));
+                    }
+                }
+                polyLinePoints.add(new LatLng(rp.getLatitude(), rp.getLongitude()));
+                if(walkPathLine == null){
+                    PolylineOptions opt = new PolylineOptions()
+                            .transparency(0.9f)
+                            .width(15)
+                            .addAll(polyLinePoints)
+                            .color(getContext().getResources().getColor(R.color.teal_500));
+                    walkPathLine = amap.addPolyline(opt);
+                }else{
+                    walkPathLine.setPoints(polyLinePoints);
+                }
+                if(rp.getRecyclePointId() != currentShowRecyclePointId || recyclePointView.getVisibility() != View.VISIBLE)
+                    return;
+                float distance = path.getDistance();
+                int minutes = (int) (path.getDuration() / 60);
+                int second = (int) (path.getDuration() - minutes * 60);
+                recyclePointWalkView.setVisibility(View.VISIBLE);
+                txtWalkDistance.setText(String.format(getString(R.string.distance_meter_format), distance));
+                txtWalkTime.setText(String.format(getString(R.string.time_elapse_min_sec_format), minutes, second));
+            }
+        });
+        LatLonPoint startLlp = new LatLonPoint(startPos.latitude, startPos.longitude);
+        LatLonPoint endLlp = new LatLonPoint(rp.getLatitude(), rp.getLongitude());
+        RouteSearch.WalkRouteQuery query = new RouteSearch.WalkRouteQuery(new RouteSearch.FromAndTo(startLlp, endLlp));
+        routeSearch.calculateWalkRouteAsyn(query);
     }
 
     @Override

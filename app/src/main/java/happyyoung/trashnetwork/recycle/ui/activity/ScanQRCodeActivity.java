@@ -1,71 +1,92 @@
 package happyyoung.trashnetwork.recycle.ui.activity;
 
-import android.os.PersistableBundle;
+import android.Manifest;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 
-import com.journeyapps.barcodescanner.CaptureManager;
-import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.bingoogolapple.qrcode.core.QRCodeView;
+import happyyoung.trashnetwork.recycle.Application;
 import happyyoung.trashnetwork.recycle.R;
 
 public class ScanQRCodeActivity extends AppCompatActivity {
-    @BindView(R.id.scanner_dbv) DecoratedBarcodeView mDBV;
+    public static final int REQUEST_CODE_SCAN_QR_CODE = 0x233;
+    public static final int RESULT_CDOE_SCAN_QR_CODE = 0x2333;
+    public static String BUNDLE_QR_CODE_STR = "QRCodeStr";
 
-    private CaptureManager captureManager;
+    @BindView(R.id.qrcode_view)
+    QRCodeView qrCodeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_qrcode);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ButterKnife.bind(this);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        qrCodeView.setDelegate(new QRCodeView.Delegate() {
+            @Override
+            public void onScanQRCodeSuccess(String s) {
+                Intent intent = new Intent();
+                intent.putExtra(BUNDLE_QR_CODE_STR, s);
+                setResult(RESULT_CDOE_SCAN_QR_CODE, intent);
+                finish();
+            }
 
-        captureManager = new CaptureManager(this, mDBV);
-        captureManager.initializeFromIntent(getIntent(), savedInstanceState);
-        captureManager.decode();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
-            finish();
-            return true;
+            @Override
+            public void onScanQRCodeOpenCameraError() {
+                AlertDialog ad = new AlertDialog.Builder(ScanQRCodeActivity.this)
+                        .setTitle(R.string.error)
+                        .setMessage(R.string.alert_error_open_camera)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        }).create();
+                ad.show();
+            }
+        });
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+            Application.checkPermission(this, new String[]{Manifest.permission.CAMERA});
+        } else{
+            qrCodeView.startCamera();
+            qrCodeView.startSpotAndShowRect();
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        captureManager.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        captureManager.onResume();
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            qrCodeView.startCamera();
+            qrCodeView.startSpotAndShowRect();
+        }else{
+            finish();
+        }
     }
 
     @Override
     protected void onDestroy() {
+        qrCodeView.onDestroy();
         super.onDestroy();
-        captureManager.onDestroy();
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-        captureManager.onSaveInstanceState(outState);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return mDBV.onKeyDown(keyCode, event) || super.onKeyDown(keyCode, event);
-    }
-
 }

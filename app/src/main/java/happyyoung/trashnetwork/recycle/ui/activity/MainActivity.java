@@ -28,8 +28,6 @@ import android.widget.Toast;
 import com.github.akashandroid90.imageletter.MaterialLetterIcon;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -165,32 +163,30 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if(intentResult == null) {
-            super.onActivityResult(requestCode, resultCode, data);
-            return;
-        }
-        String qrCodeData = intentResult.getContents();
-        if(qrCodeData == null || qrCodeData.isEmpty())
-            return;
-        try {
-            JsonElement parsedData = new JsonParser().parse(qrCodeData);
-            if(!parsedData.getAsJsonObject().has("action"))
+        if(requestCode == ScanQRCodeActivity.REQUEST_CODE_SCAN_QR_CODE && resultCode == ScanQRCodeActivity.RESULT_CDOE_SCAN_QR_CODE
+                && data != null){
+            String qrCodeData = data.getStringExtra(ScanQRCodeActivity.BUNDLE_QR_CODE_STR);
+            if(qrCodeData == null || qrCodeData.isEmpty())
                 return;
-            switch (parsedData.getAsJsonObject().get("action").getAsString()){
-                case QRCODE_ACTION_RECYCLE_BOTTLE:
-                    if(!parsedData.getAsJsonObject().has("recycle_point_id"))
-                        return;
-                    if(GlobalInfo.user == null){
-                        startActivity(new Intent(this, LoginActivity.class));
-                        Toast.makeText(this, R.string.alert_login_first, Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    recycleBottle(parsedData.getAsJsonObject().get("recycle_point_id").getAsLong());
+            try {
+                JsonElement parsedData = new JsonParser().parse(qrCodeData);
+                if(!parsedData.getAsJsonObject().has("action"))
                     return;
+                switch (parsedData.getAsJsonObject().get("action").getAsString()){
+                    case QRCODE_ACTION_RECYCLE_BOTTLE:
+                        if(!parsedData.getAsJsonObject().has("recycle_point_id"))
+                            return;
+                        if(GlobalInfo.user == null){
+                            startActivity(new Intent(this, LoginActivity.class));
+                            Toast.makeText(this, R.string.alert_login_first, Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        recycleBottle(parsedData.getAsJsonObject().get("recycle_point_id").getAsLong());
+                        return;
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
-        }catch (Exception e){
-            e.printStackTrace();
         }
     }
 
@@ -292,12 +288,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void scanQRCode(){
-        new IntentIntegrator(this)
-                .setOrientationLocked(false)
-                .setCaptureActivity(ScanQRCodeActivity.class)
-                .setBarcodeImageEnabled(false)
-                .setBeepEnabled(false)
-                .initiateScan();
+        startActivityForResult(new Intent(this, ScanQRCodeActivity.class), ScanQRCodeActivity.REQUEST_CODE_SCAN_QR_CODE);
     }
 
     @Override

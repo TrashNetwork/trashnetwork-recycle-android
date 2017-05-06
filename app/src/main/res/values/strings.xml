@@ -66,4 +66,12 @@
     <string name="gain_credit_format">You have gained %d credits</string>
     <string name="action_recycle_bottle">Recycle Bottle</string>
     <string name="bottle">Bottle</string>
+
+    <string name="daily_rank">Daily Rank</string>
+    <string name="weekly_rank">Weekly Rank</string>
+    <string name="tip_you_not_in_rank">You are not in the rank list</string>
+    <string name="update_time_format">Last update: %s</string>
+    <string name="no_rank">No rank</string>
+    <string name="tip_your_rank_format"><![CDATA[Your rank: <font color="red">%d</font>]]></string>
+
 </resources>

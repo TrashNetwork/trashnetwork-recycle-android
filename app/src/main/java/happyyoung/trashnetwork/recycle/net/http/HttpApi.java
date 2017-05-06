@@ -51,4 +51,9 @@ public class HttpApi {
         public static final String NEW_RECORD = "recycle/recycle_record/new_record";
         public static final String QUERY_RECORD = "recycle/recycle_record";
     }
+
+    public static class CreditRankApi{
+        public static final String DAILY_RANK = "recycle/credit_rank/day";
+        public static final String WEEKLY_RANK = "recycle/credit_rank/week";
+    }
 }

@@ -54,6 +54,7 @@
             android:textColor="@android:color/black"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
+            android:gravity="end"
             android:text="+1"/>
 
     </RelativeLayout>

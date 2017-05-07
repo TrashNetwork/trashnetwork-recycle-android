@@ -16,6 +16,7 @@ import butterknife.ButterKnife;
 import happyyoung.trashnetwork.recycle.Application;
 import happyyoung.trashnetwork.recycle.R;
 import happyyoung.trashnetwork.recycle.model.CreditRecord;
+import happyyoung.trashnetwork.recycle.util.DateTimeUtil;
 
 /**
  * Created by shengyun-zhou <GGGZ-1101-28@Live.cn> on 2017-03-22
@@ -40,7 +41,8 @@ public class CreditRecordAdapter extends RecyclerView.Adapter<CreditRecordAdapte
         holder.goodIcon.setShapeColor(Application.getRandomColor());
         holder.goodIcon.setLetter(cr.getGoodDescription());
         holder.txtGoodName.setText(cr.getGoodDescription());
-        holder.txtGoodQuantity.setText(cr.getQuantity().toString());
+        holder.txtGoodQuantity.setText(String.valueOf(cr.getQuantity()));
+        holder.txtRecordTime.setText(DateTimeUtil.convertTimestamp(context, cr.getRecordTime(), false, true, false));
         String creditDelta = cr.getCredit().toString();
         if(cr.getCredit() > 0)
             creditDelta = "+" + cr.getCredit();

@@ -31,6 +31,7 @@ import com.google.gson.JsonParser;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jpush.android.api.JPushInterface;
 import happyyoung.trashnetwork.recycle.Application;
 import happyyoung.trashnetwork.recycle.R;
 import happyyoung.trashnetwork.recycle.model.User;
@@ -101,10 +102,14 @@ public class MainActivity extends AppCompatActivity
         filter = new IntentFilter(Application.ACTION_USER_UPDATE);
         filter.addCategory(getPackageName());
         registerReceiver(userInfoReceiver, filter);
+
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(getApplicationContext());
     }
 
     private void exitApp(){
         stopService(new Intent(this, LocationService.class));
+        JPushInterface.stopPush(getApplicationContext());
         GlobalInfo.logout(this);
         finish();
     }

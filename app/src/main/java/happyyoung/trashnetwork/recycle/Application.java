@@ -16,6 +16,7 @@ import happyyoung.trashnetwork.recycle.net.http.HttpApi;
  */
 public class Application extends com.activeandroid.app.Application {
     public static final String BUNDLE_KEY_USER_LOCATION_DATA = "UserLocationData";
+    public static String WEBPAGE_BASE_URL;
 
     public static String ACTION_LOCATION;
     public static String ACTION_LOGIN;
@@ -31,6 +32,7 @@ public class Application extends com.activeandroid.app.Application {
         try {
             ApplicationInfo appInfo = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
             HttpApi.BASE_URL_V1 = appInfo.metaData.getString("TN_HTTP_API_BASE_URL_V1");
+            WEBPAGE_BASE_URL = appInfo.metaData.getString("TN_WEBPAGE_BASE_URL");
         }catch (Exception e){
             e.printStackTrace();
         }

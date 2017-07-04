@@ -24,4 +24,6 @@ public class PublicResultCode {
     public static final int RECYCLE_RECORD_RECYCLE_POINT_NOT_FOUND = 200402;
     public static final int RECYCLE_POINT_NOT_MANAGED = 200403;
     public static final int RECYCLE_POINT_EMPTY = 200404;
+
+    public static final int EVENT_NOT_FOUND = 200501;
 }

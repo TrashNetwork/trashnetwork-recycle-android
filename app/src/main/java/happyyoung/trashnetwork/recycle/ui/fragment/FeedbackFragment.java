@@ -109,8 +109,14 @@ public class FeedbackFragment extends Fragment {
 
         adapter = new FeedbackAdapter(getContext(), feedbackList);
         feedbackListView.setAdapter(adapter);
-        refreshFeedback(true);
         return rootView;
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        if(!hidden)
+            refreshFeedback(true);
+        super.onHiddenChanged(hidden);
     }
 
     @OnClick(R.id.btn_post_feedback)

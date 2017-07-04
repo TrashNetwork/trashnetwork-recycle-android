@@ -97,13 +97,15 @@ public class CreditRankListFragment extends Fragment {
         filter = new IntentFilter(Application.ACTION_USER_UPDATE);
         filter.addCategory(getContext().getPackageName());
         getContext().registerReceiver(userStatusReceiver, filter);
-
         updateRank();
         return rootView;
     }
 
+
     @SuppressWarnings("deprecation")
-    private void updateRank(){
+    public void updateRank(){
+        if(rootView == null)
+            return;
         String url = HttpApi.getApiUrl(HttpApi.CreditRankApi.DAILY_RANK);
         if(rankType == RANK_TYPE_WEEK)
             url = HttpApi.getApiUrl(HttpApi.CreditRankApi.WEEKLY_RANK);
@@ -176,7 +178,8 @@ public class CreditRankListFragment extends Fragment {
     private class UserStatusReceiver extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
-            updateRank();
+            if(isVisible())
+                updateRank();
         }
     }
 }

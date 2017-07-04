@@ -17,7 +17,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="${applicationId}.permission.JPUSH_MESSAGE" />
 
     <application
@@ -40,20 +40,24 @@
             android:name="TN_HTTP_API_BASE_URL_V1"
             android:value="@string/TN_HTTP_API_BASE_URL_V1" />
         <meta-data
+            android:name="TN_WEBPAGE_BASE_URL"
+            android:value="@string/TN_WEBPAGE_BASE_URL"/>
+
+        <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="@string/AMAP_LBS_API_KEY" />
         <meta-data
             android:name="JPUSH_CHANNEL"
-            android:value="developer-default"/>
+            android:value="developer-default" />
         <meta-data
             android:name="JPUSH_APPKEY"
-            android:value="@string/JPUSH_API_KEY"/>
+            android:value="@string/JPUSH_API_KEY" />
 
         <!-- push service start -->
         <service
             android:name="cn.jpush.android.service.PushService"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.REGISTER" />
                 <action android:name="cn.jpush.android.intent.REPORT" />
@@ -64,10 +68,11 @@
 
         <receiver
             android:name="cn.jpush.android.service.PushReceiver"
-            android:enabled="true" >
+            android:enabled="true">
             <intent-filter android:priority="1000">
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />
-                <category android:name="${applicationId}"/>
+
+                <category android:name="${applicationId}" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.USER_PRESENT" />
@@ -78,10 +83,11 @@
         <activity
             android:name="cn.jpush.android.ui.PushActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:exported="false" >
+            android:exported="false"
+            android:theme="@android:style/Theme.NoTitleBar">
             <intent-filter>
                 <action android:name="cn.jpush.android.ui.PushActivity" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="${applicationId}" />
             </intent-filter>
@@ -90,8 +96,7 @@
         <service
             android:name="cn.jpush.android.service.DownloadService"
             android:enabled="true"
-            android:exported="false" >
-        </service>
+            android:exported="false"></service>
 
         <receiver android:name="cn.jpush.android.service.AlarmReceiver" />
 
@@ -102,6 +107,7 @@
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -133,8 +139,10 @@
         <activity
             android:name=".ui.activity.NewFeedbackActivity"
             android:label="@string/action_new_feedback" />
-        <activity android:name=".ui.activity.RecycleRecordActivity"
-            android:label="@string/action_recycle_record"/>
+        <activity
+            android:name=".ui.activity.RecycleRecordActivity"
+            android:label="@string/action_recycle_record" />
+        <activity android:name=".ui.activity.WebActivity"></activity>
     </application>
 
 </manifest>

@@ -40,7 +40,7 @@ public class HttpApi {
 
     public static class FeedbackApi{
         public static final String QUERY_FEEDBACK = "public/feedback/feedbacks";
-        public static final String POST_FEEDBACK = "recycle/feedback/new_feekback";
+        public static final String POST_FEEDBACK = "recycle/feedback/new_feedback";
     }
 
     public static class RecyclePointApi{
@@ -55,5 +55,9 @@ public class HttpApi {
     public static class CreditRankApi{
         public static final String DAILY_RANK = "recycle/credit_rank/day";
         public static final String WEEKLY_RANK = "recycle/credit_rank/week";
+    }
+
+    public static class EventApi{
+        public static final String EVENTS = "recycle/event";
     }
 }

@@ -49,6 +49,15 @@ public class CreditRankFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        if(!hidden){
+            dailyRankFragment.updateRank();
+            weeklyRankFragment.updateRank();
+        }
+        super.onHiddenChanged(hidden);
+    }
+
     private class CreditRankPageAdapter extends FragmentPagerAdapter{
         public CreditRankPageAdapter(FragmentManager fm) {
             super(fm);

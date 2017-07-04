@@ -12,6 +12,10 @@
             android:icon="@drawable/ic_sort_descending"
             android:title="@string/action_credit_rank" />
         <item
+            android:id="@+id/nav_event"
+            android:icon="@drawable/ic_event"
+            android:title="@string/action_event" />
+        <item
             android:id="@+id/nav_feedback"
             android:icon="@drawable/ic_feedback"
             android:title="@string/action_feedback" />

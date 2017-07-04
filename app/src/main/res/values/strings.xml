@@ -73,7 +73,7 @@
     <string name="update_time_format">Last update: %s</string>
     <string name="no_rank">No rank</string>
     <string name="tip_your_rank_format"><![CDATA[Your rank: <font color="red">%d</font>]]></string>
-    
+
     <string name="distance">Distance</string>
     <string name="distance_meter_format">%.1fm</string>
     <string name="time">Time</string>
@@ -81,4 +81,9 @@
 
     <string name="tip_scan_qrcode">Place a QR code inside the viewfinder rectangle to scan it</string>
     <string name="alert_error_open_camera">Unable to open camera</string>
+
+    <string name="action_event">Event</string>
+    <string name="no_event">No event</string>
+    <string name="action_open_with_browser">Open with Browser</string>
+    <string name="action_refresh">Refresh</string>
 </resources>

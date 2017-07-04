@@ -37,6 +37,7 @@ import happyyoung.trashnetwork.recycle.R;
 import happyyoung.trashnetwork.recycle.model.User;
 import happyyoung.trashnetwork.recycle.service.LocationService;
 import happyyoung.trashnetwork.recycle.ui.fragment.CreditRankFragment;
+import happyyoung.trashnetwork.recycle.ui.fragment.EventFragment;
 import happyyoung.trashnetwork.recycle.ui.fragment.FeedbackFragment;
 import happyyoung.trashnetwork.recycle.ui.fragment.MapFragment;
 import happyyoung.trashnetwork.recycle.util.GlobalInfo;
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity
     private MapFragment mapFragment;
     private CreditRankFragment creditRankFragment;
     private FeedbackFragment feedbackFragment;
+    private EventFragment eventFragment;
 
     private boolean exitFlag = false;
     private UserInfoReceiver userInfoReceiver;
@@ -77,10 +79,12 @@ public class MainActivity extends AppCompatActivity
         mapFragment = MapFragment.newInstance(this);
         feedbackFragment = FeedbackFragment.newInstance(this);
         creditRankFragment = CreditRankFragment.newInstance(this);
+        eventFragment = EventFragment.newInstance(this);
         mFragmentManager.beginTransaction()
                 .add(R.id.main_container, mapFragment)
                 .add(R.id.main_container, feedbackFragment)
                 .add(R.id.main_container, creditRankFragment)
+                .add(R.id.main_container, eventFragment)
                 .commit();
         onNavigationItemSelected(navView.getMenu().getItem(0));
 
@@ -259,6 +263,13 @@ public class MainActivity extends AppCompatActivity
                 ft.show(creditRankFragment);
                 ft.commit();
                 break;
+            case R.id.nav_event:
+                setTitle(getString(R.string.action_event));
+                ft = mFragmentManager.beginTransaction();
+                hideAllFragment(ft);
+                ft.show(eventFragment);
+                ft.commit();
+                break;
             case R.id.nav_credit_record:
                 startActivity(new Intent(this, CreditRecordActivity.class));
                 break;
@@ -289,6 +300,7 @@ public class MainActivity extends AppCompatActivity
     private void hideAllFragment(FragmentTransaction ft){
         ft.hide(mapFragment)
           .hide(creditRankFragment)
+          .hide(eventFragment)
           .hide(feedbackFragment);
     }
 

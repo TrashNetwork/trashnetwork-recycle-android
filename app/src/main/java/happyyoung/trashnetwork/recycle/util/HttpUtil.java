@@ -75,7 +75,10 @@ public class HttpUtil {
                     public void onDataResponse(RecycleResult data) {
                         updateUserInfo(context);
                         alertDialog.setTitle(R.string.action_done);
-                        alertDialog.setMessage(String.format(context.getString(R.string.gain_credit_format), data.getCredit()));
+                        String msg = String.format(context.getString(R.string.gain_credit_format), data.getCredit());
+                        if(data.getRedPacketCredit() > 0)
+                            msg = String.format(context.getString(R.string.gain_credit_red_packet_format), data.getRedPacketCredit()) + '\n' + msg;
+                        alertDialog.setMessage(msg);
                         alertDialog.show();
                     }
 

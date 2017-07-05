@@ -1,7 +1,9 @@
 package happyyoung.trashnetwork.recycle.ui.activity;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
@@ -50,7 +52,18 @@ public class SettingsActivity extends AppCompatActivity {
                     .addItem(R.drawable.ic_exit, getString(R.string.action_logout), null, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            logout();
+                            final AlertDialog ad = new AlertDialog.Builder(SettingsActivity.this)
+                                    .setTitle(R.string.action_confirm)
+                                    .setMessage(R.string.alert_logout)
+                                    .setNegativeButton(R.string.action_cancel, null)
+                                    .setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            logout();
+                                        }
+                                    })
+                                    .create();
+                            ad.show();
                         }
                     });
             accountCard.getView().setLayoutParams(params);

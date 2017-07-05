@@ -35,11 +35,13 @@
     <string name="alert_waiting">Please wait…</string>
     <string name="alert_session_expired">Session has expired, please avatarlogin again.</string>
     <string name="alert_click_avatar_login">Click avatar to login</string>
+    <string name="alert_logout">Are you sure to logout?</string>
     <string name="error">Error</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="action_confirm">Confirm</string>
     <string name="action_ok">OK</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_done">Done</string>
@@ -63,7 +65,8 @@
     <string name="content">Content</string>
     <string name="alert_location_outdate">Your location info has been outdated,
         please try again after your location is updated.</string>
-    <string name="gain_credit_format">You have gained %d credits</string>
+    <string name="gain_credit_format">You have gained %d credits in total.</string>
+    <string name="gain_credit_red_packet_format">Lucky! You have gained a red packet of %d credits.</string>
     <string name="action_recycle_bottle">Recycle Bottle</string>
     <string name="bottle">Bottle</string>
 

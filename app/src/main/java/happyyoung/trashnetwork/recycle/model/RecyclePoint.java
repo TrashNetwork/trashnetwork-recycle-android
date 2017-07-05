@@ -16,6 +16,7 @@ public class RecyclePoint {
     private Double latitude;
     private Integer bottleNum;
     private Boolean bottleRecycle = false;
+    private Boolean isRedPacketPoint = false;
 
     public RecyclePoint(Long recyclePointId, Long ownerId, String description, Double longitude, Double latitude, @Nullable Integer bottleNum) {
         this.recyclePointId = recyclePointId;
@@ -40,24 +41,13 @@ public class RecyclePoint {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
-
     public Double getLatitude() {
         return latitude;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
     }
 
     public Boolean isBottleRecycle() {
@@ -76,7 +66,7 @@ public class RecyclePoint {
         return ownerId;
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    public Boolean isRedPacketPoint() {
+        return isRedPacketPoint;
     }
 }

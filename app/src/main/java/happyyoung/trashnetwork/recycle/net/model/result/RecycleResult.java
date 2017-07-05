@@ -4,18 +4,20 @@ package happyyoung.trashnetwork.recycle.net.model.result;
  * Created by shengyun-zhou <GGGZ-1101-28@Live.cn> on 2017-03-28
  */
 public class RecycleResult extends Result {
-    private int credit;
+    private Integer credit;
+    private Integer redPacketCredit;
 
-    public RecycleResult(int resultCode, String message, int credit) {
+    public RecycleResult(int resultCode, String message, int credit, int redPacketCredit) {
         super(resultCode, message);
         this.credit = credit;
+        this.redPacketCredit = redPacketCredit;
     }
 
-    public int getCredit() {
+    public Integer getCredit() {
         return credit;
     }
 
-    public void setCredit(int credit) {
-        this.credit = credit;
+    public Integer getRedPacketCredit() {
+        return redPacketCredit;
     }
 }

@@ -41,8 +41,7 @@
             android:value="@string/TN_HTTP_API_BASE_URL_V1" />
         <meta-data
             android:name="TN_WEBPAGE_BASE_URL"
-            android:value="@string/TN_WEBPAGE_BASE_URL"/>
-
+            android:value="@string/TN_WEBPAGE_BASE_URL" />
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="@string/AMAP_LBS_API_KEY" />
@@ -96,7 +95,7 @@
         <service
             android:name="cn.jpush.android.service.DownloadService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
 
         <receiver android:name="cn.jpush.android.service.AlarmReceiver" />
 
@@ -142,7 +141,11 @@
         <activity
             android:name=".ui.activity.RecycleRecordActivity"
             android:label="@string/action_recycle_record" />
-        <activity android:name=".ui.activity.WebActivity"></activity>
+        <activity android:name=".ui.activity.WebActivity" />
+        <activity
+            android:name=".ui.activity.DeliverAddressActivity"
+            android:label="@string/setting_delivery_address" />
+        <activity android:name=".ui.activity.EditDeliveryAddressActivity"></activity>
     </application>
 
 </manifest>

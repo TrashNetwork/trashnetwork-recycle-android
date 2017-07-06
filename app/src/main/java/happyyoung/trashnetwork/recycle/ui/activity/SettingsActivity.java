@@ -49,6 +49,12 @@ public class SettingsActivity extends AppCompatActivity {
         if(GlobalInfo.user != null){
             accountCard = new PreferenceCard(this)
                     .addGroup(getString(R.string.account))
+                    .addItem(R.drawable.ic_deliver, getString(R.string.setting_delivery_address), null, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(SettingsActivity.this, DeliverAddressActivity.class));
+                        }
+                    })
                     .addItem(R.drawable.ic_exit, getString(R.string.action_logout), null, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

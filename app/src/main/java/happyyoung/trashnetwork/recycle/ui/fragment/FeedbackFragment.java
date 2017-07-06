@@ -42,9 +42,12 @@ public class FeedbackFragment extends Fragment {
     private static final int FEEDBACK_REQUEST_LIMIT = 20;
 
     private View rootView;
-    @BindView(R.id.txt_no_feedback) TextView txtNoFeedback;
-    @BindView(R.id.feedback_list) SuperRecyclerView feedbackListView;
-    @BindView(R.id.btn_post_feedback) FloatingActionButton btnPostFeedback;
+    @BindView(R.id.txt_no_feedback)
+    TextView txtNoFeedback;
+    @BindView(R.id.feedback_list)
+    SuperRecyclerView feedbackListView;
+    @BindView(R.id.btn_post_feedback)
+    FloatingActionButton btnPostFeedback;
     private DateSelector dateSelector;
 
     private List<Feedback> feedbackList = new ArrayList<>();
@@ -65,7 +68,7 @@ public class FeedbackFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if(rootView != null)
+        if (rootView != null)
             return rootView;
         rootView = inflater.inflate(R.layout.fragment_feedback, container, false);
         ButterKnife.bind(this, rootView);
@@ -82,14 +85,12 @@ public class FeedbackFragment extends Fragment {
         feedbackListView.setLayoutManager(new LinearLayoutManager(getContext()));
         feedbackListView.getRecyclerView().setNestedScrollingEnabled(false);
         feedbackListView.getSwipeToRefresh().setColorSchemeResources(R.color.colorAccent);
-        feedbackListView.getRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener()
-        {
+        feedbackListView.getRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
-            {
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0 && btnPostFeedback.isShown())
                     btnPostFeedback.hide();
-                else if(dy < 0 && !btnPostFeedback.isShown())
+                else if (dy < 0 && !btnPostFeedback.isShown())
                     btnPostFeedback.show();
             }
         });
@@ -114,17 +115,17 @@ public class FeedbackFragment extends Fragment {
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        if(!hidden)
+        if (!hidden)
             refreshFeedback(true);
         super.onHiddenChanged(hidden);
     }
 
     @OnClick(R.id.btn_post_feedback)
-    void onBtnPostFeedbackClick(View v){
+    void onBtnPostFeedbackClick(View v) {
         startActivity(new Intent(getContext(), NewFeedbackActivity.class));
     }
 
-    private void updateTime(){
+    private void updateTime() {
         endTime.set(Calendar.HOUR_OF_DAY, 23);
         endTime.set(Calendar.MINUTE, 59);
         endTime.set(Calendar.SECOND, 59);
@@ -132,8 +133,8 @@ public class FeedbackFragment extends Fragment {
                 0, 0, 0);
     }
 
-    private void refreshFeedback(final boolean refresh){
-        if(refresh) {
+    private void refreshFeedback(final boolean refresh) {
+        if (refresh) {
             updateTime();
             dateSelector.setEnable(false);
             feedbackListView.setRefreshing(true);
@@ -145,16 +146,16 @@ public class FeedbackFragment extends Fragment {
             @Override
             public void onDataResponse(FeedbackListResult data) {
                 showContentView(true, refresh);
-                if(refresh) {
+                if (refresh) {
                     feedbackList.clear();
                     adapter.notifyDataSetChanged();
                 }
-                for(Feedback fb : data.getFeedbackList()){
+                for (Feedback fb : data.getFeedbackList()) {
                     feedbackList.add(fb);
                     endTime.setTimeInMillis(fb.getFeedbackTime().getTime() - 1000);
                     adapter.notifyItemInserted(feedbackList.size() - 1);
                 }
-                if(data.getFeedbackList().size() < FEEDBACK_REQUEST_LIMIT)
+                if (data.getFeedbackList().size() < FEEDBACK_REQUEST_LIMIT)
                     feedbackListView.setNumberBeforeMoreIsCalled(-1);
                 else
                     feedbackListView.setNumberBeforeMoreIsCalled(1);
@@ -167,8 +168,8 @@ public class FeedbackFragment extends Fragment {
 
             @Override
             public boolean onErrorDataResponse(int statusCode, Result errorInfo) {
-                if(errorInfo.getResultCode() == PublicResultCode.FEEDBACK_NOT_FOUND) {
-                    if(!refresh)
+                if (errorInfo.getResultCode() == PublicResultCode.FEEDBACK_NOT_FOUND) {
+                    if (!refresh)
                         feedbackListView.setNumberBeforeMoreIsCalled(-1);
                     else
                         return true;
@@ -178,14 +179,14 @@ public class FeedbackFragment extends Fragment {
         }));
     }
 
-    private void showContentView(boolean hasContent, boolean refresh){
+    private void showContentView(boolean hasContent, boolean refresh) {
         feedbackListView.setRefreshing(false);
         feedbackListView.hideMoreProgress();
         dateSelector.setEnable(true);
-        if(refresh && !hasContent){
+        if (refresh && !hasContent) {
             feedbackListView.getRecyclerView().setVisibility(View.INVISIBLE);
             txtNoFeedback.setVisibility(View.VISIBLE);
-        }else if(refresh && hasContent){
+        } else if (refresh && hasContent) {
             feedbackListView.getRecyclerView().setVisibility(View.VISIBLE);
             txtNoFeedback.setVisibility(View.GONE);
         }

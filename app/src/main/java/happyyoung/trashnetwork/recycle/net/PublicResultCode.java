@@ -11,6 +11,10 @@ public class PublicResultCode {
     public static final int ILLEGAL_PASSWORD_LENGTH = 200012;
     public static final int ILLEGAL_PASSWORD_FORMAT = 200013;
     public static final int ILLEGAL_EMAIL = 200014;
+    public static final int ILLEGAL_ACCOUNT_TYPE = 200015;
+    public static final int ILLEGAL_PHONE = 200016;
+
+    public static final int DELIVER_ADDRESS_NOT_FOUND = 200021;
 
     public static final int CREDIT_RECORD_NOT_FOUND = 200101;
     public static final int CREDIT_RECORD_RECYCLE_POINT_NOT_FOUND = 200111;

@@ -29,7 +29,7 @@ public class PreferenceCard {
     @BindDimen(R.dimen.item_padding) int ITEM_PADDING;
     @BindDimen(R.dimen.activity_vertical_margin) int VERTICAL_MARGIN;
     @BindDimen(R.dimen.activity_horizontal_margin) int HORIZONTAL_MARGIN;
-    @BindDimen(R.dimen.normal_icon_size) int NORMAL_ICON_SIZE;
+    @BindDimen(R.dimen.small_icon_size) int SMALL_ICON_SIZE;
     @BindDimen(R.dimen.normal_text_size) int NORMAL_TEXT_SIZE;
     @BindDimen(R.dimen.small_text_size) int SMALL_TEXT_SIZE;
     @BindDimen(R.dimen.separator_size) int SEPARATOR_SIZE;
@@ -68,7 +68,7 @@ public class PreferenceCard {
         TypedValue outValue = new TypedValue();
         context.getTheme().resolveAttribute(R.attr.selectableItemBackground, outValue, true);
         itemLayout.setBackgroundResource(outValue.resourceId);
-        itemLayout.setPadding(HORIZONTAL_MARGIN, ITEM_PADDING, HORIZONTAL_MARGIN, ITEM_PADDING);
+        itemLayout.setPadding(HORIZONTAL_MARGIN, VERTICAL_MARGIN, HORIZONTAL_MARGIN, VERTICAL_MARGIN);
         itemLayout.setOrientation(LinearLayout.HORIZONTAL);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -81,7 +81,7 @@ public class PreferenceCard {
 
         if(iconRes != null) {
             ImageView iconView = new ImageView(context);
-            params = new LinearLayout.LayoutParams(NORMAL_ICON_SIZE, NORMAL_ICON_SIZE);
+            params = new LinearLayout.LayoutParams(SMALL_ICON_SIZE, SMALL_ICON_SIZE);
             params.gravity = Gravity.CENTER_VERTICAL;
             params.setMarginEnd(HORIZONTAL_MARGIN);
             iconView.setLayoutParams(params);
@@ -94,7 +94,7 @@ public class PreferenceCard {
         params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER_VERTICAL;
         if(iconRes == null)
-            params.setMarginStart(NORMAL_ICON_SIZE + HORIZONTAL_MARGIN);
+            params.setMarginStart(SMALL_ICON_SIZE + HORIZONTAL_MARGIN);
         textLayout.setLayoutParams(params);
         itemLayout.addView(textLayout);
 

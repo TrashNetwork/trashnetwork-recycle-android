@@ -87,6 +87,17 @@
 
     <string name="action_event">Event</string>
     <string name="no_event">No event</string>
-    <string name="action_open_with_browser">Open with Browser</string>
+    <string name="action_open_with_browser">Open with browser</string>
     <string name="action_refresh">Refresh</string>
+
+    <string name="setting_delivery_address">Delivery address</string>
+    <string name="action_new_address">New address</string>
+    <string name="action_edit_address">Edit address</string>
+    <string name="setting_modify_password">Modify password</string>
+    <string name="txt_default">Default</string>
+    <string name="no_address">No address</string>
+    <string name="address">Address</string>
+    <string name="name">Name</string>
+    <string name="phone_number">Phone number</string>
+    <string name="alert_delete">Are you sure to delete?</string>
 </resources>

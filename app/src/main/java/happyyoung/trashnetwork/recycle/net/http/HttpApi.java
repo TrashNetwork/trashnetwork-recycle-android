@@ -31,6 +31,8 @@ public class HttpApi {
         public static final String LOGOUT = "recycle/account/logout";
         public static final String CHECK_LOGIN = "recycle/account/check_login";
         public static final String SELF_INFO = "recycle/account/self";
+        public static final String DELIVERY_ADDRESS = "recycle/account/delivery_address";
+        public static final String NEW_DELIVERY_ADDRESS = "recycle/account/delivery_address/new";
     }
 
     public static class CreditRecordApi{

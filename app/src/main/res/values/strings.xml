@@ -49,7 +49,7 @@
     <string name="your_location">Your Location</string>
     <string name="unknown_location">Unknown Location</string>
     <string name="credit_format">Credit: %d</string>
-    <string name="good">Good</string>
+    <string name="item">Item</string>
     <string name="quantity">Quantity</string>
     <string name="action_about">About</string>
     <string name="version">Version</string>

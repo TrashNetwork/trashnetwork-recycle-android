@@ -31,63 +31,14 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:orientation="vertical"
-            android:layout_toEndOf="@+id/icon_good_letters"
-            android:layout_toStartOf="@+id/credit_record_time_value_area">
+            android:layout_toEndOf="@+id/icon_good_letters">
 
-            <LinearLayout
+            <TextView android:id="@+id/txt_item_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/normal_text_size"
-                    android:textColor="@color/indigo_500"
-                    android:text="@string/good"
-                    android:layout_marginEnd="@dimen/item_padding"/>
-
-                <TextView android:id="@+id/txt_good_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_text_size"
-                    android:text="Bottle"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/normal_text_size"
-                    android:textColor="@color/indigo_500"
-                    android:text="@string/quantity"
-                    android:layout_marginEnd="@dimen/item_padding"/>
-
-                <TextView android:id="@+id/txt_good_quantity"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/normal_text_size"
-                    android:text="5"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout android:id="@+id/credit_record_time_value_area"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginStart="@dimen/item_padding"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            android:gravity="end">
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/normal_text_size"
+                android:text="Bottle"/>
 
             <TextView android:id="@+id/txt_credit_record_time"
                 android:layout_width="wrap_content"
@@ -97,14 +48,16 @@
                 android:textSize="@dimen/small_text_size"
                 android:text="17:00"/>
 
-            <TextView android:id="@+id/txt_credit_delta"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/large_text_size"
-                android:textColor="@android:color/black"
-                android:text="+1"/>
-
         </LinearLayout>
+
+        <TextView android:id="@+id/txt_credit_delta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/large_text_size"
+            android:textColor="@android:color/black"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="+1"/>
 
     </RelativeLayout>
 

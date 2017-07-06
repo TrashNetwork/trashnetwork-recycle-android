@@ -39,9 +39,8 @@ public class CreditRecordAdapter extends RecyclerView.Adapter<CreditRecordAdapte
     public void onBindViewHolder(CreditRecordViewHolder holder, int position) {
         CreditRecord cr = recordList.get(position);
         holder.goodIcon.setShapeColor(Application.getRandomColor());
-        holder.goodIcon.setLetter(cr.getGoodDescription());
-        holder.txtGoodName.setText(cr.getGoodDescription());
-        holder.txtGoodQuantity.setText(String.valueOf(cr.getQuantity()));
+        holder.goodIcon.setLetter(cr.getItemDescription());
+        holder.txtItemName.setText(cr.getItemDescription());
         holder.txtRecordTime.setText(DateTimeUtil.convertTimestamp(context, cr.getRecordTime(), false, true, false));
         String creditDelta = cr.getCredit().toString();
         if(cr.getCredit() > 0)
@@ -56,8 +55,7 @@ public class CreditRecordAdapter extends RecyclerView.Adapter<CreditRecordAdapte
 
     class CreditRecordViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.icon_good_letters) MaterialLetterIcon goodIcon;
-        @BindView(R.id.txt_good_name) TextView txtGoodName;
-        @BindView(R.id.txt_good_quantity) TextView txtGoodQuantity;
+        @BindView(R.id.txt_item_name) TextView txtItemName;
         @BindView(R.id.txt_credit_delta) TextView txtCreditDelta;
         @BindView(R.id.txt_credit_record_time) TextView txtRecordTime;
 

@@ -56,7 +56,7 @@ public class CreditRecordActivity extends AppCompatActivity {
             @Override
             public void onDateChanged(Calendar newDate) {
                 endTime = newDate;
-                refreshCreditRecord(true);
+                refreshCreditRecord(true, true);
             }
         });
 
@@ -66,19 +66,19 @@ public class CreditRecordActivity extends AppCompatActivity {
         creditRecordListView.setupMoreListener(new OnMoreListener() {
             @Override
             public void onMoreAsked(int numberOfItems, int numberBeforeMore, int currentItemPos) {
-                refreshCreditRecord(false);
+                refreshCreditRecord(false, false);
             }
         }, -1);
         creditRecordListView.setRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshCreditRecord(true);
+                refreshCreditRecord(true, false);
             }
         });
 
         adapter = new CreditRecordAdapter(this, recordList);
         creditRecordListView.setAdapter(adapter);
-        refreshCreditRecord(true);
+        refreshCreditRecord(true, false);
     }
 
     private void updateTime(){
@@ -89,7 +89,7 @@ public class CreditRecordActivity extends AppCompatActivity {
                 0, 0, 0);
     }
 
-    private void refreshCreditRecord(final boolean refresh){
+    private void refreshCreditRecord(final boolean refresh, final boolean dateChanged){
         if(refresh) {
             updateTime();
             dateSelector.setEnable(false);
@@ -118,7 +118,7 @@ public class CreditRecordActivity extends AppCompatActivity {
 
                     @Override
                     public void onErrorResponse() {
-                        showContent(false, refresh);
+                        showContent(!recordList.isEmpty() && !dateChanged, refresh);
                     }
 
                     @Override

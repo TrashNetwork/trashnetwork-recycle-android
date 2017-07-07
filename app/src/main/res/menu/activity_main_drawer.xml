@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_map"
@@ -8,17 +7,13 @@
             android:title="@string/action_map"
             android:checked="true"/>
         <item
-            android:id="@+id/nav_credit_rank"
-            android:icon="@drawable/ic_sort_descending"
-            android:title="@string/action_credit_rank" />
-        <item
             android:id="@+id/nav_event"
             android:icon="@drawable/ic_event"
             android:title="@string/action_event" />
         <item
-            android:id="@+id/nav_feedback"
-            android:icon="@drawable/ic_feedback"
-            android:title="@string/action_feedback" />
+            android:id="@+id/nav_credit_mall"
+            android:icon="@drawable/ic_store"
+            android:title="@string/action_credit_mall"/>
     </group>
 
     <group android:id="@+id/nav_group_user"
@@ -26,12 +21,24 @@
         <item
             android:id="@+id/nav_credit_record"
             android:icon="@drawable/ic_history"
+            android:visible="false"
             android:title="@string/action_credit_record" />
         <item
             android:id="@+id/nav_recycle_record"
-            android:icon="@drawable/ic_history"
+            android:icon="@drawable/ic_recycle_32dp"
             android:visible="false"
             android:title="@string/action_recycle_record"/>
+    </group>
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_credit_rank"
+            android:icon="@drawable/ic_sort_descending"
+            android:title="@string/action_credit_rank" />
+        <item
+            android:id="@+id/nav_feedback"
+            android:icon="@drawable/ic_feedback"
+            android:title="@string/action_feedback" />
     </group>
 
     <group android:id="@+id/nav_group_other"

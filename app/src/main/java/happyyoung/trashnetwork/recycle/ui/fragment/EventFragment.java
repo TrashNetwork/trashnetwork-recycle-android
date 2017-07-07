@@ -100,8 +100,14 @@ public class EventFragment extends Fragment {
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        if(!hidden)
+        if(!hidden) {
+            txtNoEvent.setVisibility(View.GONE);
             refreshEvent(true);
+        }else{
+            eventList.clear();          //Free memory
+            if(rootView != null)
+                adapter.notifyDataSetChanged();
+        }
         super.onHiddenChanged(hidden);
     }
 
@@ -133,7 +139,7 @@ public class EventFragment extends Fragment {
 
             @Override
             public void onErrorResponse() {
-                showContentView(false, refresh);
+                showContentView(!eventList.isEmpty(), refresh);
             }
 
             @Override

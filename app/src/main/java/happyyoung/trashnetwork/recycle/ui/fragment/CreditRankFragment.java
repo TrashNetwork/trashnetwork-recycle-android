@@ -54,6 +54,9 @@ public class CreditRankFragment extends Fragment {
         if(!hidden){
             dailyRankFragment.updateRank();
             weeklyRankFragment.updateRank();
+        }else{
+            dailyRankFragment.clearRankList();
+            weeklyRankFragment.clearRankList();
         }
         super.onHiddenChanged(hidden);
     }

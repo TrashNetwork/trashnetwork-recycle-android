@@ -17,6 +17,7 @@ import happyyoung.trashnetwork.recycle.Application;
 import happyyoung.trashnetwork.recycle.R;
 import happyyoung.trashnetwork.recycle.model.Feedback;
 import happyyoung.trashnetwork.recycle.util.DateTimeUtil;
+import happyyoung.trashnetwork.recycle.util.StringUtil;
 
 /**
  * Created by shengyun-zhou <GGGZ-1101-28@Live.cn> on 2017-03-15
@@ -42,7 +43,7 @@ public class FeedbackAdapter extends RecyclerView.Adapter<FeedbackAdapter.Feedba
             holder.feedbackPortrait.setShapeColor(Application.generateColorFromStr(fb.getUserName()));
             holder.txtFeedbackUsername.setText(fb.getUserName());
             holder.feedbackPortrait.setLettersNumber(2);
-            holder.feedbackPortrait.setLetter(fb.getUserName());
+            holder.feedbackPortrait.setLetter(StringUtil.getDigestLetters(fb.getUserName(), 2));
         }else {
             holder.feedbackPortrait.setShapeColor(Application.getRandomColor());
             holder.txtFeedbackUsername.setText(context.getString(R.string.anonymous_user));

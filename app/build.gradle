@@ -1,4 +1,15 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.jakewharton.hugo'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.jakewharton.hugo:hugo-plugin:1.2.1'
+    }
+}
 
 android {
     signingConfigs {
@@ -63,6 +74,7 @@ dependencies {
             'cn.bingoogolapple:bga-qrcodecore:1.1.7@aar',
             'cn.bingoogolapple:bga-zxing:1.1.7@aar',
             'com.just.agentweb:agentweb:1.2.4',
+            'com.github.nekocode:Badge:2.0',
             'org.eclipse.paho:org.eclipse.paho.client.mqttv3:+',
     )
 

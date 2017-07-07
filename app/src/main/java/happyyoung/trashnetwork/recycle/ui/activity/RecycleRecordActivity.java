@@ -58,7 +58,7 @@ public class RecycleRecordActivity extends AppCompatActivity {
             @Override
             public void onDateChanged(Calendar newDate) {
                 endTime = newDate;
-                refreshRecycleRecord(true);
+                refreshRecycleRecord(true, true);
             }
         });
 
@@ -68,19 +68,19 @@ public class RecycleRecordActivity extends AppCompatActivity {
         recycleRecordListView.setupMoreListener(new OnMoreListener() {
             @Override
             public void onMoreAsked(int numberOfItems, int numberBeforeMore, int currentItemPos) {
-                refreshRecycleRecord(false);
+                refreshRecycleRecord(false, false);
             }
         }, -1);
         recycleRecordListView.setRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshRecycleRecord(true);
+                refreshRecycleRecord(true, false);
             }
         });
 
         adapter = new RecycleRecordAdapter(this, recordList);
         recycleRecordListView.setAdapter(adapter);
-        refreshRecycleRecord(true);
+        refreshRecycleRecord(true, false);
     }
 
     private void updateTime(){
@@ -91,7 +91,7 @@ public class RecycleRecordActivity extends AppCompatActivity {
                 0, 0, 0);
     }
 
-    private void refreshRecycleRecord(final boolean refresh){
+    private void refreshRecycleRecord(final boolean refresh, final boolean dateChanged){
         if(refresh) {
             updateTime();
             dateSelector.setEnable(false);
@@ -120,7 +120,7 @@ public class RecycleRecordActivity extends AppCompatActivity {
 
                     @Override
                     public void onErrorResponse() {
-                        showContent(false, refresh);
+                        showContent(!recordList.isEmpty() && !dateChanged, refresh);
                     }
 
                     @Override

@@ -78,7 +78,7 @@ public class FeedbackFragment extends Fragment {
             @Override
             public void onDateChanged(Calendar newDate) {
                 endTime = newDate;
-                refreshFeedback(true);
+                refreshFeedback(true, true);
             }
         });
 
@@ -97,14 +97,14 @@ public class FeedbackFragment extends Fragment {
         feedbackListView.setRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshFeedback(true);
+                refreshFeedback(true, false);
             }
         });
 
         feedbackListView.setupMoreListener(new OnMoreListener() {
             @Override
             public void onMoreAsked(int numberOfItems, int numberBeforeMore, int currentItemPos) {
-                refreshFeedback(false);
+                refreshFeedback(false, false);
             }
         }, -1);
 
@@ -115,8 +115,14 @@ public class FeedbackFragment extends Fragment {
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        if (!hidden)
-            refreshFeedback(true);
+        if (!hidden) {
+            txtNoFeedback.setVisibility(View.GONE);
+            refreshFeedback(true, false);
+        }else{
+            feedbackList.clear();
+            if(rootView != null)
+                adapter.notifyDataSetChanged();
+        }
         super.onHiddenChanged(hidden);
     }
 
@@ -133,7 +139,7 @@ public class FeedbackFragment extends Fragment {
                 0, 0, 0);
     }
 
-    private void refreshFeedback(final boolean refresh) {
+    private void refreshFeedback(final boolean refresh, final boolean dateChanged) {
         if (refresh) {
             updateTime();
             dateSelector.setEnable(false);
@@ -163,7 +169,7 @@ public class FeedbackFragment extends Fragment {
 
             @Override
             public void onErrorResponse() {
-                showContentView(false, refresh);
+                showContentView(!feedbackList.isEmpty() && !dateChanged, refresh);
             }
 
             @Override

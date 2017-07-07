@@ -17,6 +17,7 @@ import happyyoung.trashnetwork.recycle.Application;
 import happyyoung.trashnetwork.recycle.R;
 import happyyoung.trashnetwork.recycle.model.CreditRecord;
 import happyyoung.trashnetwork.recycle.util.DateTimeUtil;
+import happyyoung.trashnetwork.recycle.util.StringUtil;
 
 /**
  * Created by shengyun-zhou <GGGZ-1101-28@Live.cn> on 2017-03-22
@@ -39,7 +40,7 @@ public class CreditRecordAdapter extends RecyclerView.Adapter<CreditRecordAdapte
     public void onBindViewHolder(CreditRecordViewHolder holder, int position) {
         CreditRecord cr = recordList.get(position);
         holder.goodIcon.setShapeColor(Application.getRandomColor());
-        holder.goodIcon.setLetter(cr.getItemDescription());
+        holder.goodIcon.setLetter(StringUtil.getDigestLetters(cr.getItemDescription(), 2));
         holder.txtItemName.setText(cr.getItemDescription());
         holder.txtRecordTime.setText(DateTimeUtil.convertTimestamp(context, cr.getRecordTime(), false, true, false));
         String creditDelta = cr.getCredit().toString();

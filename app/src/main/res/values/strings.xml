@@ -91,8 +91,8 @@
     <string name="action_refresh">Refresh</string>
 
     <string name="setting_delivery_address">Delivery address</string>
-    <string name="action_new_address">New address</string>
-    <string name="action_edit_address">Edit address</string>
+    <string name="action_new_address">New Address</string>
+    <string name="action_edit_address">Edit Address</string>
     <string name="setting_modify_password">Modify password</string>
     <string name="txt_default">Default</string>
     <string name="no_address">No address</string>
@@ -100,4 +100,9 @@
     <string name="name">Name</string>
     <string name="phone_number">Phone number</string>
     <string name="alert_delete">Are you sure to delete?</string>
+
+    <string name="action_credit_mall">Credit Mall</string>
+    <string name="commodity_credit_format">%d credits</string>
+    <string name="no_commodity">No commodity</string>
+    <string name="action_search">Search</string>
 </resources>

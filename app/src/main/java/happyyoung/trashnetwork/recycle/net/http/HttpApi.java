@@ -62,4 +62,10 @@ public class HttpApi {
     public static class EventApi{
         public static final String EVENTS = "recycle/event";
     }
+
+    public static class CreditMallApi{
+        public static final String COMMODITY_LIST = "recycle/credit_mall/commodity";
+        public static final String COMMODITY_LIST_BY_KEYWORD = "recycle/credit_mall/commodity/by_keyword";
+        public static final String COMMODITY_DETAIL = "recycle/credit_mall/commodity/detail";
+    }
 }

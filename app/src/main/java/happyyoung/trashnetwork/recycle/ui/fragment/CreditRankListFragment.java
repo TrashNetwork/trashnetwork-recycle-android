@@ -101,6 +101,11 @@ public class CreditRankListFragment extends Fragment {
         return rootView;
     }
 
+    public void clearRankList(){
+        rankList.clear();
+        if(rootView != null)
+            adapter.notifyDataSetChanged();
+    }
 
     @SuppressWarnings("deprecation")
     public void updateRank(){

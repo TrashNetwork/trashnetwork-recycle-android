@@ -1,6 +1,7 @@
 package happyyoung.trashnetwork.recycle.ui.activity;
 
 import android.Manifest;
+import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,12 +38,15 @@ import happyyoung.trashnetwork.recycle.Application;
 import happyyoung.trashnetwork.recycle.R;
 import happyyoung.trashnetwork.recycle.model.User;
 import happyyoung.trashnetwork.recycle.service.LocationService;
+import happyyoung.trashnetwork.recycle.ui.fragment.CreditMallFragment;
 import happyyoung.trashnetwork.recycle.ui.fragment.CreditRankFragment;
 import happyyoung.trashnetwork.recycle.ui.fragment.EventFragment;
 import happyyoung.trashnetwork.recycle.ui.fragment.FeedbackFragment;
 import happyyoung.trashnetwork.recycle.ui.fragment.MapFragment;
 import happyyoung.trashnetwork.recycle.util.GlobalInfo;
 import happyyoung.trashnetwork.recycle.util.HttpUtil;
+import happyyoung.trashnetwork.recycle.util.StringUtil;
+import hugo.weaving.DebugLog;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -57,6 +62,7 @@ public class MainActivity extends AppCompatActivity
     private CreditRankFragment creditRankFragment;
     private FeedbackFragment feedbackFragment;
     private EventFragment eventFragment;
+    private CreditMallFragment creditMallFragment;
 
     private boolean exitFlag = false;
     private UserInfoReceiver userInfoReceiver;
@@ -80,11 +86,13 @@ public class MainActivity extends AppCompatActivity
         feedbackFragment = FeedbackFragment.newInstance(this);
         creditRankFragment = CreditRankFragment.newInstance(this);
         eventFragment = EventFragment.newInstance(this);
+        creditMallFragment = CreditMallFragment.newInstance(this);
         mFragmentManager.beginTransaction()
                 .add(R.id.main_container, mapFragment)
                 .add(R.id.main_container, feedbackFragment)
                 .add(R.id.main_container, creditRankFragment)
                 .add(R.id.main_container, eventFragment)
+                .add(R.id.main_container, creditMallFragment)
                 .commit();
         onNavigationItemSelected(navView.getMenu().getItem(0));
 
@@ -136,7 +144,7 @@ public class MainActivity extends AppCompatActivity
             navView.getMenu().setGroupVisible(R.id.nav_group_user, false);
         }else{
             userPortrait.setShapeColor(Application.generateColorFromStr(GlobalInfo.user.getUserName()));
-            userPortrait.setLetter(GlobalInfo.user.getUserName());
+            userPortrait.setLetter(StringUtil.getDigestLetters(GlobalInfo.user.getUserName(), 2));
             txtCredit.setVisibility(View.VISIBLE);
             txtCredit.setText(String.format(getString(R.string.credit_format), GlobalInfo.user.getCredit()));
             txtPhoneNumber.setText(GlobalInfo.user.getUserName());
@@ -155,6 +163,10 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            if(creditMallFragment.isVisible()){
+                if(creditMallFragment.onBackPressed())
+                    return;
+            }
             if(!exitFlag){
                 Toast.makeText(this, R.string.alert_press_again_to_exit, Toast.LENGTH_SHORT).show();
                 exitFlag = true;
@@ -230,8 +242,19 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, menu);
+        MenuItem searchItem = menu.findItem(R.id.menu_search);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+        creditMallFragment.setSearchView(searchItem, searchView);
         return true;
     }
 
@@ -270,6 +293,13 @@ public class MainActivity extends AppCompatActivity
                 ft.show(eventFragment);
                 ft.commit();
                 break;
+            case R.id.nav_credit_mall:
+                setTitle(getString(R.string.action_credit_mall));
+                ft = mFragmentManager.beginTransaction();
+                hideAllFragment(ft);
+                ft.show(creditMallFragment);
+                ft.commit();
+                break;
             case R.id.nav_credit_record:
                 startActivity(new Intent(this, CreditRecordActivity.class));
                 break;
@@ -301,7 +331,8 @@ public class MainActivity extends AppCompatActivity
         ft.hide(mapFragment)
           .hide(creditRankFragment)
           .hide(eventFragment)
-          .hide(feedbackFragment);
+          .hide(feedbackFragment)
+          .hide(creditMallFragment);
     }
 
     private void scanQRCode(){

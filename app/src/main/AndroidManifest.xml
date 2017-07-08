@@ -145,7 +145,8 @@
         <activity
             android:name=".ui.activity.DeliverAddressActivity"
             android:label="@string/setting_delivery_address" />
-        <activity android:name=".ui.activity.EditDeliveryAddressActivity"></activity>
+        <activity android:name=".ui.activity.EditDeliveryAddressActivity" />
+        <activity android:name=".ui.activity.CreditMallDetailActivity"></activity>
     </application>
 
 </manifest>

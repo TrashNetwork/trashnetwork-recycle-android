@@ -105,4 +105,8 @@
     <string name="commodity_credit_format">%d credits</string>
     <string name="no_commodity">No commodity</string>
     <string name="action_search">Search</string>
+    <string name="action_exchange_now">Exchange Now</string>
+    <string name="stock_format">Stock: %d</string>
+    <string name="out_of_stock">Out of stock</string>
+    <string name="click_to_reload">Click to reload</string>
 </resources>

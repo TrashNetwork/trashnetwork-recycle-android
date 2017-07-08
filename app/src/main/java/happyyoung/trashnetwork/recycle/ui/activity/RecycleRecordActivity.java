@@ -27,14 +27,14 @@ import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonListener;
 import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonRequest;
 import happyyoung.trashnetwork.recycle.net.model.result.RecycleRecordListResult;
 import happyyoung.trashnetwork.recycle.net.model.result.Result;
-import happyyoung.trashnetwork.recycle.ui.widget.DateSelector;
+import happyyoung.trashnetwork.recycle.ui.widget.DateRangeSelector;
 import happyyoung.trashnetwork.recycle.util.DateTimeUtil;
 import happyyoung.trashnetwork.recycle.util.GlobalInfo;
 
 public class RecycleRecordActivity extends AppCompatActivity {
     private static final int RECORD_REQUEST_LIMIT = 20;
 
-    private DateSelector dateSelector;
+    private DateRangeSelector dateRangeSelector;
     @BindView(R.id.txt_no_record)
     TextView txtNoRecord;
     @BindView(R.id.recycle_record_list)
@@ -53,11 +53,13 @@ public class RecycleRecordActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         startTime = Calendar.getInstance();
+        startTime.set(Calendar.DATE, startTime.get(Calendar.DATE) - 1);
         endTime = Calendar.getInstance();
-        dateSelector = new DateSelector(this, endTime, new DateSelector.OnDateChangedListener() {
+        dateRangeSelector = new DateRangeSelector(this, startTime, endTime, new DateRangeSelector.OnDateChangedListener() {
             @Override
-            public void onDateChanged(Calendar newDate) {
-                endTime = newDate;
+            public void onDateChanged(Calendar newStartDate, Calendar newEndDate) {
+                endTime = newEndDate;
+                startTime = newStartDate;
                 refreshRecycleRecord(true, true);
             }
         });
@@ -87,14 +89,14 @@ public class RecycleRecordActivity extends AppCompatActivity {
         endTime.set(Calendar.HOUR_OF_DAY, 23);
         endTime.set(Calendar.MINUTE, 59);
         endTime.set(Calendar.SECOND, 59);
-        startTime.set(endTime.get(Calendar.YEAR), endTime.get(Calendar.MONTH), endTime.get(Calendar.DATE),
+        startTime.set(startTime.get(Calendar.YEAR), startTime.get(Calendar.MONTH), startTime.get(Calendar.DATE),
                 0, 0, 0);
     }
 
     private void refreshRecycleRecord(final boolean refresh, final boolean dateChanged){
         if(refresh) {
             updateTime();
-            dateSelector.setEnable(false);
+            dateRangeSelector.setEnable(false);
             recycleRecordListView.setRefreshing(true);
         }
         String url = HttpApi.getApiUrl(HttpApi.RecycleRecordApi.QUERY_RECORD, DateTimeUtil.getUnixTimestampStr(startTime.getTime()),
@@ -137,7 +139,7 @@ public class RecycleRecordActivity extends AppCompatActivity {
     }
 
     private void showContent(boolean hasContent, boolean refresh){
-        dateSelector.setEnable(true);
+        dateRangeSelector.setEnable(true);
         recycleRecordListView.setRefreshing(false);
         recycleRecordListView.hideMoreProgress();
 

@@ -6,8 +6,8 @@
     android:background="@color/grey_200">
 
     <ImageView
-        android:layout_width="@dimen/normal_icon_size"
-        android:layout_height="@dimen/normal_icon_size"
+        android:layout_width="@dimen/small_icon_size"
+        android:layout_height="@dimen/small_icon_size"
         android:layout_centerVertical="true"
         app:srcCompat="@drawable/ic_calendar"
         android:tint="@color/colorAccent"
@@ -21,6 +21,7 @@
         android:cursorVisible="false"
         android:editable="false"
         android:gravity="center"
+        android:focusable="false"
         android:minEms="5"/>
 
     <ImageButton

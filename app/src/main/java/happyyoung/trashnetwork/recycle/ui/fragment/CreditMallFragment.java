@@ -2,6 +2,7 @@ package happyyoung.trashnetwork.recycle.ui.fragment;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -40,6 +41,7 @@ import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonListener;
 import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonRequest;
 import happyyoung.trashnetwork.recycle.net.model.result.CommodityPreviewListResult;
 import happyyoung.trashnetwork.recycle.net.model.result.Result;
+import happyyoung.trashnetwork.recycle.ui.activity.CreditMallDetailActivity;
 import happyyoung.trashnetwork.recycle.util.DateTimeUtil;
 import hugo.weaving.DebugLog;
 
@@ -159,8 +161,8 @@ public class CreditMallFragment extends Fragment implements CommodityPreviewAdap
             });
 
             //Test
-            //commodityList.add(new CommodityPreview(1L, "IPhone 8", 1, new Date(), null));
-            //adapter.notifyDataSetChanged();
+            commodityList.add(new CommodityPreview(1L, "IPhone 8", 1, new Date(), null));
+            adapter.notifyDataSetChanged();
 
             refreshCommodity(true, null, endTime, commodityListView, adapter, commodityList);
         }else{
@@ -271,6 +273,8 @@ public class CreditMallFragment extends Fragment implements CommodityPreviewAdap
 
     @Override
     public void onItemClick(CommodityPreview cp, int position) {
-
+        Intent intent = new Intent(getContext(), CreditMallDetailActivity.class);
+        intent.putExtra(CreditMallDetailActivity.BUNDLE_KEY_COMMODITY_ID, cp.getCommodityId());
+        startActivity(intent);
     }
 }

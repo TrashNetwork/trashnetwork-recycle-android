@@ -75,6 +75,9 @@ dependencies {
             'cn.bingoogolapple:bga-zxing:1.1.7@aar',
             'com.just.agentweb:agentweb:1.2.4',
             'com.github.nekocode:Badge:2.0',
+            'com.squareup.picasso:picasso:2.3.2',
+            'com.nineoldandroids:library:2.4.0',
+            'com.daimajia.slider:library:1.1.5@aar',
             'org.eclipse.paho:org.eclipse.paho.client.mqttv3:+',
     )
 

@@ -6,7 +6,7 @@
     tools:context="happyyoung.trashnetwork.recycle.ui.fragment.FeedbackFragment">
 
     <include android:id="@+id/widget_date_selection"
-        layout="@layout/widget_date_selection"/>
+        layout="@layout/widget_date_selector"/>
 
     <com.malinskiy.superrecyclerview.SuperRecyclerView
         android:id="@+id/feedback_list"

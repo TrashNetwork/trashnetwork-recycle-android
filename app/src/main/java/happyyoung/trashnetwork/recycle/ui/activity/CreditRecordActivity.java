@@ -27,14 +27,14 @@ import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonListener;
 import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonRequest;
 import happyyoung.trashnetwork.recycle.net.model.result.CreditRecordListResult;
 import happyyoung.trashnetwork.recycle.net.model.result.Result;
-import happyyoung.trashnetwork.recycle.ui.widget.DateSelector;
+import happyyoung.trashnetwork.recycle.ui.widget.DateRangeSelector;
 import happyyoung.trashnetwork.recycle.util.DateTimeUtil;
 import happyyoung.trashnetwork.recycle.util.GlobalInfo;
 
 public class CreditRecordActivity extends AppCompatActivity {
     private static final int RECORD_REQUEST_LIMIT = 20;
 
-    private DateSelector dateSelector;
+    private DateRangeSelector dateRangeSelector;
     @BindView(R.id.txt_no_record) TextView txtNoRecord;
     @BindView(R.id.credit_record_list) SuperRecyclerView creditRecordListView;
 
@@ -51,11 +51,13 @@ public class CreditRecordActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         startTime = Calendar.getInstance();
+        startTime.set(Calendar.DATE, startTime.get(Calendar.DATE) - 1);
         endTime = Calendar.getInstance();
-        dateSelector = new DateSelector(this, endTime, new DateSelector.OnDateChangedListener() {
+        dateRangeSelector = new DateRangeSelector(this, startTime, endTime, new DateRangeSelector.OnDateChangedListener() {
             @Override
-            public void onDateChanged(Calendar newDate) {
-                endTime = newDate;
+            public void onDateChanged(Calendar newStartDate, Calendar newEndDate) {
+                startTime = newStartDate;
+                endTime = newEndDate;
                 refreshCreditRecord(true, true);
             }
         });
@@ -85,14 +87,14 @@ public class CreditRecordActivity extends AppCompatActivity {
         endTime.set(Calendar.HOUR_OF_DAY, 23);
         endTime.set(Calendar.MINUTE, 59);
         endTime.set(Calendar.SECOND, 59);
-        startTime.set(endTime.get(Calendar.YEAR), endTime.get(Calendar.MONTH), endTime.get(Calendar.DATE),
+        startTime.set(startTime.get(Calendar.YEAR), startTime.get(Calendar.MONTH), startTime.get(Calendar.DATE),
                 0, 0, 0);
     }
 
     private void refreshCreditRecord(final boolean refresh, final boolean dateChanged){
         if(refresh) {
             updateTime();
-            dateSelector.setEnable(false);
+            dateRangeSelector.setEnable(false);
             creditRecordListView.setRefreshing(true);
         }
         String url = HttpApi.getApiUrl(HttpApi.CreditRecordApi.QUERY_RECORD, DateTimeUtil.getUnixTimestampStr(startTime.getTime()),
@@ -135,7 +137,7 @@ public class CreditRecordActivity extends AppCompatActivity {
     }
 
     private void showContent(boolean hasContent, boolean refresh){
-        dateSelector.setEnable(true);
+        dateRangeSelector.setEnable(true);
         creditRecordListView.setRefreshing(false);
         creditRecordListView.hideMoreProgress();
 

@@ -47,7 +47,7 @@ public class CommodityPreviewAdapter extends RecyclerView.Adapter<CommodityPrevi
     }
 
     @Override
-    public void onBindViewHolder(CommodityPreviewViewHolder holder, int position) {
+    public void onBindViewHolder(CommodityPreviewViewHolder holder, final int position) {
         Context context = holder.itemView.getContext();
         final CommodityPreview cp = commodityPreviewList.get(position);
         if(cp.getThumbnail() != null){
@@ -72,6 +72,13 @@ public class CommodityPreviewAdapter extends RecyclerView.Adapter<CommodityPrevi
         }else{
             holder.imgNewBadge.setVisibility(View.GONE);
         }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(listener != null)
+                    listener.onItemClick(cp, position);
+            }
+        });
     }
 
     @Override

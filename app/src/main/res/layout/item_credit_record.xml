@@ -31,7 +31,8 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:orientation="vertical"
-            android:layout_toEndOf="@+id/icon_good_letters">
+            android:layout_toEndOf="@+id/icon_good_letters"
+            android:layout_toStartOf="@+id/txt_credit_delta">
 
             <TextView android:id="@+id/txt_item_name"
                 android:layout_width="wrap_content"
@@ -57,6 +58,7 @@
             android:textColor="@android:color/black"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/item_padding_small"
             android:text="+1"/>
 
     </RelativeLayout>

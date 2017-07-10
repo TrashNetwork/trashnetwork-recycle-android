@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -82,7 +83,6 @@ public class PreferenceCard {
             itemLayout.setOnClickListener(listener);
         linearLayout.addView(itemLayout);
 
-
         if(iconRes != null) {
             ImageView iconView = new ImageView(context);
             params = new LinearLayout.LayoutParams(SMALL_ICON_SIZE, SMALL_ICON_SIZE);
@@ -95,7 +95,7 @@ public class PreferenceCard {
 
         LinearLayout textLayout = new LinearLayout(context);
         textLayout.setOrientation(LinearLayout.VERTICAL);
-        params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER_VERTICAL;
         //if(iconRes == null)
         //    params.setMarginStart(SMALL_ICON_SIZE + HORIZONTAL_MARGIN);
@@ -108,7 +108,7 @@ public class PreferenceCard {
         titleTextView.setText(title);
         textLayout.addView(titleTextView);
 
-        if(value != null){
+        if(!TextUtils.isEmpty(value)){
             TextView valueTextView = new TextView(context);
             valueTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, SMALL_TEXT_SIZE);
             valueTextView.setText(value);

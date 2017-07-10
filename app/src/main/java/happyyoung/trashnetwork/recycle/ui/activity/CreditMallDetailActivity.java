@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.daimajia.slider.library.SliderLayout;
@@ -26,6 +27,7 @@ import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonListener;
 import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonRequest;
 import happyyoung.trashnetwork.recycle.net.model.result.CommodityDetailResult;
 import happyyoung.trashnetwork.recycle.ui.widget.BitmapSlider;
+import happyyoung.trashnetwork.recycle.util.GlobalInfo;
 import happyyoung.trashnetwork.recycle.util.GsonUtil;
 
 public class CreditMallDetailActivity extends AppCompatActivity {
@@ -123,6 +125,11 @@ public class CreditMallDetailActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_exchange)
     void onBtnExchangeClick(View v){
+        if(GlobalInfo.user == null){
+            startActivity(new Intent(this, LoginActivity.class));
+            Toast.makeText(this, getString(R.string.alert_login_first), Toast.LENGTH_SHORT).show();
+            return;
+        }
         Intent intent = new Intent(this, SubmitOrderActivity.class);
         intent.putExtra(SubmitOrderActivity.BUNDLE_KEY_COMMODITY,
                 GsonUtil.getDefaultGsonBuilder()

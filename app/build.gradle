@@ -63,7 +63,7 @@ dependencies {
     })
     compile(
             'com.google.code.gson:gson:+',
-            'com.mcxiaoke.volley:library:+',
+            'com.android.volley:volley:1.0.0',
             'de.hdodenhof:circleimageview:2.+',
             'com.michaelpardo:activeandroid:3.+',
             'com.rengwuxian.materialedittext:library:2.1.4',
@@ -78,7 +78,6 @@ dependencies {
             'com.squareup.picasso:picasso:2.3.2',
             'com.nineoldandroids:library:2.4.0',
             'com.daimajia.slider:library:1.1.5@aar',
-            'org.eclipse.paho:org.eclipse.paho.client.mqttv3:+',
     )
 
     compile 'com.jakewharton:butterknife:8.5.1'

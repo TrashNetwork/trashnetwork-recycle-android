@@ -51,8 +51,10 @@
     <string name="credit_format">Credit: %d</string>
     <string name="item">Item</string>
     <string name="quantity">Quantity</string>
+
     <string name="action_about">About</string>
-    <string name="version">Version</string>
+    <string name="app_version_format">Version: %s</string>
+    <string name="open_source_license">Open source license</string>
 
     <string name="no_record">No record</string>
     <string name="no_feedback">No feedback</string>

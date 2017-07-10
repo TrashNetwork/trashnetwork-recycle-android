@@ -13,7 +13,8 @@ import mehdi.sakout.aboutpage.AboutPage;
 import mehdi.sakout.aboutpage.Element;
 
 public class AboutActivity extends AppCompatActivity {
-    @BindView(R.id.about_container) LinearLayout container;
+    @BindView(R.id.about_container)
+    LinearLayout container;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,12 +23,31 @@ public class AboutActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        String[] openSourceLib = new String[]{
+                "google/gson",
+                "google/volley",
+                "hdodenhof/CircleImageView",
+                "pardom/ActiveAndroid",
+                "rengwuxian/MaterialEditText",
+                "medyo/android-about-page",
+                "akashandroid90/ImageLetterIcon",
+                "Malinskiy/SuperRecyclerView",
+                "bingoogolapple/BGAQRCode-Android",
+                "Justson/AgentWeb",
+                "nekocode/Badge",
+                "daimajia/AndroidImageSlider",
+        };
+
         AboutPage aboutPage = new AboutPage(this)
                 .setImage(R.mipmap.ic_launcher)
                 .setDescription(getString(R.string.app_name))
-                .addItem(new Element(getString(R.string.version) + ": " + BuildConfig.VERSION_NAME, R.drawable.ic_info_outline_48dp))
+                .addItem(new Element(String.format(getString(R.string.app_version_format), BuildConfig.VERSION_NAME), R.drawable.ic_info_outline_32dp))
                 .addEmail("GGGZ-1101-28@Live.cn", "GGGZ-1101-28@Live.cn")
-                .addGitHub("TrashNetwork", "https://github.com/TrashNetwork");
+                .addGitHub("TrashNetwork", "https://github.com/TrashNetwork")
+                .addGroup(getString(R.string.open_source_license));
+        for(String s : openSourceLib){
+            aboutPage.addGitHub(s, s);
+        }
         container.addView(aboutPage.create());
     }
 

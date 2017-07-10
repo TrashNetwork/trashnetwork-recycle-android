@@ -2,6 +2,7 @@ package happyyoung.trashnetwork.recycle.model;
 
 import android.content.Context;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import happyyoung.trashnetwork.recycle.R;
@@ -9,7 +10,7 @@ import happyyoung.trashnetwork.recycle.R;
 /**
  * Created by shengyun-zhou <GGGZ-1101-28@Live.cn> on 2017-07-09
  */
-public class Order {
+public class Order implements Serializable {
     public static final String ORDER_STATUS_IN_PROGRESS = "P";
     public static final String ORDER_STATUS_DELIVERING = "D";
     public static final String ORDER_STATUS_FINISHED = "F";

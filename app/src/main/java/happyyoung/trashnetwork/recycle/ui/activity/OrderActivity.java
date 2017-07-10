@@ -1,5 +1,6 @@
 package happyyoung.trashnetwork.recycle.ui.activity;
 
+import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -143,7 +144,9 @@ public class OrderActivity extends AppCompatActivity {
         adapter = new OrderAdapter(orderList, new OrderAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Order order, int position) {
-
+                Intent intent = new Intent(OrderActivity.this, OrderDetailActivity.class);
+                intent.putExtra(OrderDetailActivity.BUNDLE_KEY_ORDER, order);
+                startActivity(intent);
             }
         });
         orderListView.setAdapter(adapter);

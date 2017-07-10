@@ -148,12 +148,15 @@
         <activity android:name=".ui.activity.EditDeliveryAddressActivity" />
         <activity
             android:name=".ui.activity.CreditMallDetailActivity"
-            android:label="@string/commodity_detail" />
+            android:label="@string/action_commodity_detail" />
         <activity
             android:name=".ui.activity.OrderActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.activity.SubmitOrderActivity"
-            android:label="@string/action_submit_order"/>
+        <activity
+            android:name=".ui.activity.SubmitOrderActivity"
+            android:label="@string/action_submit_order" />
+        <activity android:name=".ui.activity.OrderDetailActivity"
+            android:label="@string/action_order_detail"/>
     </application>
 
 </manifest>

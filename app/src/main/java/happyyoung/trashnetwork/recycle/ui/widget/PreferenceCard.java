@@ -64,6 +64,10 @@ public class PreferenceCard {
     }
 
     public PreferenceCard addItem(@Nullable @DrawableRes Integer iconRes, String title, @Nullable String value, @Nullable View.OnClickListener listener){
+        return addItem(iconRes, title, value, false, listener);
+    }
+
+    public PreferenceCard addItem(@Nullable @DrawableRes Integer iconRes, String title, @Nullable String value, boolean valueSelectable, @Nullable View.OnClickListener listener){
         LinearLayout itemLayout = new LinearLayout(context);
         TypedValue outValue = new TypedValue();
         context.getTheme().resolveAttribute(R.attr.selectableItemBackground, outValue, true);
@@ -93,8 +97,8 @@ public class PreferenceCard {
         textLayout.setOrientation(LinearLayout.VERTICAL);
         params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER_VERTICAL;
-        if(iconRes == null)
-            params.setMarginStart(SMALL_ICON_SIZE + HORIZONTAL_MARGIN);
+        //if(iconRes == null)
+        //    params.setMarginStart(SMALL_ICON_SIZE + HORIZONTAL_MARGIN);
         textLayout.setLayoutParams(params);
         itemLayout.addView(textLayout);
 
@@ -108,6 +112,7 @@ public class PreferenceCard {
             TextView valueTextView = new TextView(context);
             valueTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, SMALL_TEXT_SIZE);
             valueTextView.setText(value);
+            valueTextView.setTextIsSelectable(valueSelectable);
             textLayout.addView(valueTextView);
         }
 

@@ -104,7 +104,7 @@
 
     <string name="action_credit_mall">Credit Mall</string>
     <string name="commodity_credit_format">%d Credits</string>
-    <string name="commodity_detail">Commodity Detail</string>
+    <string name="action_commodity_detail">Commodity Detail</string>
     <string name="no_commodity">No commodity</string>
     <string name="action_search">Search</string>
     <string name="action_exchange_now">Exchange Now</string>
@@ -137,4 +137,13 @@
     <string name="error_illegal_quantity">Illegal quantity</string>
     <string name="error_quantity_exceed_limit">Quantity exceeds limit</string>
     <string name="error_no_delivery_address">Please choose a delivery address</string>
+    <string name="action_order_detail">Order Detail</string>
+    <string name="order">Order</string>
+    <string name="order_id">Order ID</string>
+    <string name="commodity">Commodity</string>
+    <string name="status">Status</string>
+    <string name="submit_time">Submit time</string>
+    <string name="delivery_info">Delivery info</string>
+    <string name="delivery_company">Delivery company</string>
+    <string name="waybill_id">Waybill ID</string>
 </resources>

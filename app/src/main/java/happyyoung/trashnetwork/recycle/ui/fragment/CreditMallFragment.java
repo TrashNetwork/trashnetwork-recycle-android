@@ -160,10 +160,6 @@ public class CreditMallFragment extends Fragment implements CommodityPreviewAdap
                 }
             });
 
-            //Test
-            commodityList.add(new CommodityPreview(1L, "IPhone 8", 1, new Date(), null));
-            adapter.notifyDataSetChanged();
-
             refreshCommodity(true, null, endTime, commodityListView, adapter, commodityList);
         }else{
             commodityList.clear();

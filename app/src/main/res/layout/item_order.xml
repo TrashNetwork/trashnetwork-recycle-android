@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/order_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/item_padding"
+        android:layout_marginStart="@dimen/item_padding"
+        android:layout_marginEnd="@dimen/item_padding"
+        android:layout_marginBottom="@dimen/item_padding_small"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/item_padding">
+
+            <TextView android:id="@+id/txt_commodity_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_padding"
+                android:layout_marginStart="@dimen/item_padding"
+                android:layout_marginEnd="@dimen/item_padding"
+                android:layout_marginBottom="@dimen/item_padding_small"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/normal_text_size"
+                android:text="IPhone 8"/>
+
+            <TextView android:id="@+id/txt_submit_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/small_text_size"
+                android:layout_marginLeft="@dimen/item_padding"
+                android:layout_marginRight="@dimen/item_padding"
+                android:layout_marginBottom="@dimen/item_padding"
+                android:text="07-01"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginStart="@dimen/item_padding"
+                android:layout_marginEnd="@dimen/item_padding"
+                android:layout_marginBottom="@dimen/item_padding">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_coin"
+                    android:tint="@color/red_500"
+                    android:layout_marginEnd="@dimen/item_padding"/>
+
+                <TextView android:id="@+id/txt_total_credit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/red_500"
+                    android:textSize="@dimen/normal_text_size"
+                    android:text="@string/credit_total_format"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginStart="@dimen/item_padding"
+                android:layout_marginEnd="@dimen/item_padding">
+
+                <ImageView android:id="@+id/icon_delivery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_deliver"
+                    android:tint="@color/deep_purple_500"
+                    android:layout_marginEnd="@dimen/item_padding"/>
+
+                <TextView android:id="@+id/txt_order_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/normal_text_size"
+                    android:text="In progress"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+</LinearLayout>

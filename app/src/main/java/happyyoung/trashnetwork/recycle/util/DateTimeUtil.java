@@ -2,8 +2,10 @@ package happyyoung.trashnetwork.recycle.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import happyyoung.trashnetwork.recycle.R;
@@ -65,7 +67,15 @@ public class DateTimeUtil {
                 && d1.getDate() == d2.getDate();
     }
 
-    public static String getUnixTimestampStr(Date date){
+    public static String getUnixTimestampStr(@Nullable Date date){
+        if(date == null)
+            return null;
         return Long.toString(date.getTime() / 1000);
+    }
+
+    public static String getUnixTimestampStr(@Nullable Calendar calendar){
+        if(calendar == null)
+            return null;
+        return getUnixTimestampStr(calendar.getTime());
     }
 }

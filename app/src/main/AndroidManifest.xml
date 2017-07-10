@@ -146,7 +146,14 @@
             android:name=".ui.activity.DeliverAddressActivity"
             android:label="@string/setting_delivery_address" />
         <activity android:name=".ui.activity.EditDeliveryAddressActivity" />
-        <activity android:name=".ui.activity.CreditMallDetailActivity"></activity>
+        <activity
+            android:name=".ui.activity.CreditMallDetailActivity"
+            android:label="@string/commodity_detail" />
+        <activity
+            android:name=".ui.activity.OrderActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ui.activity.SubmitOrderActivity"
+            android:label="@string/action_submit_order"/>
     </application>
 
 </manifest>

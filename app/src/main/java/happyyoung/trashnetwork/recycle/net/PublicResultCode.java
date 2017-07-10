@@ -32,4 +32,6 @@ public class PublicResultCode {
     public static final int EVENT_NOT_FOUND = 200501;
 
     public static final int COMMODITY_NOT_FOUND = 200601;
+
+    public static final int ORDER_NOT_FOUND = 200621;
 }

@@ -67,5 +67,8 @@ public class HttpApi {
         public static final String COMMODITY_LIST = "recycle/credit_mall/commodity";
         public static final String COMMODITY_LIST_BY_KEYWORD = "recycle/credit_mall/commodity/by_keyword";
         public static final String COMMODITY_DETAIL = "recycle/credit_mall/commodity/detail";
+        public static final String SUBMIT_ORDER = "recycle/credit_mall/order/new";
+        public static final String ORDERS = "recycle/credit_mall/order";
+        public static final String ORDERS_BY_STATUS = "recycle/credit_mall/order/by_status";
     }
 }

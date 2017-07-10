@@ -91,6 +91,7 @@
     <string name="action_refresh">Refresh</string>
 
     <string name="setting_delivery_address">Delivery address</string>
+    <string name="action_choose_address">Choose address</string>
     <string name="action_new_address">New Address</string>
     <string name="action_edit_address">Edit Address</string>
     <string name="setting_modify_password">Modify password</string>
@@ -102,11 +103,38 @@
     <string name="alert_delete">Are you sure to delete?</string>
 
     <string name="action_credit_mall">Credit Mall</string>
-    <string name="commodity_credit_format">%d credits</string>
+    <string name="commodity_credit_format">%d Credits</string>
+    <string name="commodity_detail">Commodity Detail</string>
     <string name="no_commodity">No commodity</string>
     <string name="action_search">Search</string>
     <string name="action_exchange_now">Exchange Now</string>
     <string name="stock_format">Stock: %d</string>
     <string name="out_of_stock">Out of stock</string>
     <string name="click_to_reload">Click to reload</string>
+
+    <string name="action_order">Order</string>
+    <string name="no_order">No order</string>
+    <string name="credit_total_format" formatted="false">%d x %d = %d Credits</string>
+
+    <string-array name="order_status">
+        <item>In progress</item>
+        <item>Delivering</item>
+        <item>Cancelled</item>
+        <item>Finished</item>
+        <item>All</item>
+    </string-array>
+
+    <string name="action_submit_order">Submit Order</string>
+    <string name="action_submit">Submit</string>
+    <string name="credit">Credit</string>
+    <string name="total_credit">Total credit</string>
+    <string name="note_maximum_format">(Maximum: %d)</string>
+    <string name="bill">Bill</string>
+    <string name="remark">Remark</string>
+    <string name="note_optional">(Optional)</string>
+    <string name="credit_balance">Credit balance</string>
+    <string name="stock">Stock</string>
+    <string name="error_illegal_quantity">Illegal quantity</string>
+    <string name="error_quantity_exceed_limit">Quantity exceeds limit</string>
+    <string name="error_no_delivery_address">Please choose a delivery address</string>
 </resources>

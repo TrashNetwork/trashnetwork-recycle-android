@@ -300,6 +300,9 @@ public class MainActivity extends AppCompatActivity
                 ft.show(creditMallFragment);
                 ft.commit();
                 break;
+            case R.id.nav_order:
+                startActivity(new Intent(this, OrderActivity.class));
+                break;
             case R.id.nav_credit_record:
                 startActivity(new Intent(this, CreditRecordActivity.class));
                 break;

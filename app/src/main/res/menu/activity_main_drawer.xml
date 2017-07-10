@@ -19,14 +19,16 @@
     <group android:id="@+id/nav_group_user"
         android:checkableBehavior="none">
         <item
+            android:id="@+id/nav_order"
+            android:icon="@drawable/ic_clipboard_outline"
+            android:title="@string/action_order"/>
+        <item
             android:id="@+id/nav_credit_record"
-            android:icon="@drawable/ic_history"
-            android:visible="false"
+            android:icon="@drawable/ic_coin"
             android:title="@string/action_credit_record" />
         <item
             android:id="@+id/nav_recycle_record"
             android:icon="@drawable/ic_recycle_32dp"
-            android:visible="false"
             android:title="@string/action_recycle_record"/>
     </group>
 

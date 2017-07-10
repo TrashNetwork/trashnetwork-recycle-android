@@ -1,5 +1,6 @@
 package happyyoung.trashnetwork.recycle.ui.activity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,6 +26,7 @@ import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonListener;
 import happyyoung.trashnetwork.recycle.net.http.HttpApiJsonRequest;
 import happyyoung.trashnetwork.recycle.net.model.result.CommodityDetailResult;
 import happyyoung.trashnetwork.recycle.ui.widget.BitmapSlider;
+import happyyoung.trashnetwork.recycle.util.GsonUtil;
 
 public class CreditMallDetailActivity extends AppCompatActivity {
     public static final String BUNDLE_KEY_COMMODITY_ID = "CommodityID";
@@ -36,6 +39,8 @@ public class CreditMallDetailActivity extends AppCompatActivity {
     TextView txtTitle;
     @BindView(R.id.txt_commodity_credit)
     TextView txtCredit;
+    @BindView(R.id.txt_commodity_stock)
+    TextView txtStock;
     @BindView(R.id.txt_commodity_desc)
     TextView txtDesc;
     @BindView(R.id.img_slider_commodity)
@@ -96,11 +101,11 @@ public class CreditMallDetailActivity extends AppCompatActivity {
         txtTitle.setText(commodity.getTitle());
         txtCredit.setText(String.format(getString(R.string.commodity_credit_format), commodity.getCredit()));
         if(commodity.getStock() <= 0){
-            txtCredit.setTextColor(Color.RED);
-            txtCredit.setText(R.string.out_of_stock);
+            txtStock.setTextColor(Color.RED);
+            txtStock.setText(R.string.out_of_stock);
             btnExchange.setEnabled(false);
         }else{
-            txtCredit.setText(String.format(getString(R.string.stock_format), commodity.getStock()));
+            txtStock.setText(String.format(getString(R.string.stock_format), commodity.getStock()));
         }
         txtDesc.setText(Html.fromHtml(commodity.getDescription()));
         if(commodity.getCommodityImages() == null || commodity.getCommodityImages().isEmpty()){
@@ -109,9 +114,22 @@ public class CreditMallDetailActivity extends AppCompatActivity {
             for(Bitmap b : commodity.getCommodityImages()){
                 BitmapSlider bitmapSlider = new BitmapSlider(this)
                         .image(b);
+                bitmapSlider.setScaleType(BaseSliderView.ScaleType.FitCenterCrop);
                 imgSlider.addSlider(bitmapSlider);
             }
         }
+        imgSlider.stopAutoCycle();
+    }
+
+    @OnClick(R.id.btn_exchange)
+    void onBtnExchangeClick(View v){
+        Intent intent = new Intent(this, SubmitOrderActivity.class);
+        intent.putExtra(SubmitOrderActivity.BUNDLE_KEY_COMMODITY,
+                GsonUtil.getDefaultGsonBuilder()
+                        .excludeFieldsWithoutExposeAnnotation()
+                        .create()
+                        .toJson(commodity));
+        startActivity(intent);
     }
 
     @Override

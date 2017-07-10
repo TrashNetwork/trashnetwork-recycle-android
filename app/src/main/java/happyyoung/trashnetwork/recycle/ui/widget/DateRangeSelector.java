@@ -33,43 +33,54 @@ public class DateRangeSelector {
     private EditText selectDateText;
     private DateRangeSelector.OnDateChangedListener listener;
 
-    public DateRangeSelector(Activity activity, Calendar startDate, Calendar endDate, @Nullable OnDateChangedListener listener){
+    public DateRangeSelector(Activity activity, @Nullable Calendar startDate, @Nullable Calendar endDate, @Nullable OnDateChangedListener listener){
         this(activity.findViewById(android.R.id.content), activity, startDate, endDate, listener);
     }
 
-    public DateRangeSelector(View rootView, Calendar startDate, Calendar endDate, @Nullable OnDateChangedListener listener){
+    public DateRangeSelector(View rootView, @Nullable Calendar startDate, @Nullable Calendar endDate, @Nullable OnDateChangedListener listener){
         this(rootView, rootView.getContext(), startDate, endDate, listener);
     }
 
-    private DateRangeSelector(View rootView, Context context, final Calendar startDate, final Calendar endDate, @Nullable OnDateChangedListener listener){
+    private DateRangeSelector(View rootView, Context context, @Nullable final Calendar startDate, @Nullable final Calendar endDate, @Nullable OnDateChangedListener listener){
         this.context = context;
         ButterKnife.bind(this, rootView);
-        editStartDate.setText(DateTimeUtil.convertTimestamp(context, startDate.getTime(), true, false));
-        editEndDate.setText(DateTimeUtil.convertTimestamp(context, endDate.getTime(), true, false));
+        if(startDate != null)
+            editStartDate.setText(DateTimeUtil.convertTimestamp(context, startDate.getTime(), true, false));
+        else
+            editStartDate.setText("");
+        if(endDate != null)
+            editEndDate.setText(DateTimeUtil.convertTimestamp(context, endDate.getTime(), true, false));
+        else
+            editEndDate.setText("");
         this.startDate = startDate;
         this.endDate = endDate;
         this.listener = listener;
+        Calendar tempDate = Calendar.getInstance();
         datePickerDialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 selectDate.set(year, month, dayOfMonth);
                 selectDateText.setText(DateTimeUtil.convertTimestamp(DateRangeSelector.this.context, selectDate.getTime(), true, false));
                 if(DateRangeSelector.this.listener != null)
-                    DateRangeSelector.this.listener.onDateChanged(startDate, endDate);
+                    DateRangeSelector.this.listener.onDateChanged(DateRangeSelector.this.startDate, DateRangeSelector.this.endDate);
             }
-        }, startDate.get(Calendar.YEAR), startDate.get(Calendar.MONTH), startDate.get(Calendar.DAY_OF_MONTH));
+        }, tempDate.get(Calendar.YEAR), tempDate.get(Calendar.MONTH), tempDate.get(Calendar.DAY_OF_MONTH));
     }
 
     @OnClick({R.id.edit_start_date, R.id.edit_end_date})
     void onDateChangeClick(View v){
         switch (v.getId()){
             case R.id.edit_start_date:
+                if(startDate == null)
+                    startDate = Calendar.getInstance();
                 datePickerDialog.updateDate(startDate.get(Calendar.YEAR), startDate.get(Calendar.MONTH), startDate.get(Calendar.DAY_OF_MONTH));
                 selectDate = startDate;
                 selectDateText = editStartDate;
                 datePickerDialog.show();
                 break;
             case R.id.edit_end_date:
+                if(endDate == null)
+                    endDate = Calendar.getInstance();
                 datePickerDialog.updateDate(endDate.get(Calendar.YEAR), endDate.get(Calendar.MONTH), endDate.get(Calendar.DAY_OF_MONTH));
                 selectDate = endDate;
                 selectDateText = editEndDate;

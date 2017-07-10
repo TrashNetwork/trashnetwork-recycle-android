@@ -142,10 +142,13 @@ public class FeedbackFragment extends Fragment {
     private void refreshFeedback(final boolean refresh, final boolean dateChanged) {
         if (refresh) {
             updateTime();
-            dateSelector.setEnable(false);
             feedbackListView.setRefreshing(true);
         }
-
+        dateSelector.setEnable(false);
+        if(refresh && dateChanged){
+            feedbackList.clear();
+            adapter.notifyDataSetChanged();
+        }
         String url = HttpApi.getApiUrl(HttpApi.FeedbackApi.QUERY_FEEDBACK, DateTimeUtil.getUnixTimestampStr(startTime.getTime()),
                 DateTimeUtil.getUnixTimestampStr(endTime.getTime()), "" + FEEDBACK_REQUEST_LIMIT);
         HttpApi.startRequest(new HttpApiJsonRequest(getActivity(), url, Request.Method.GET, GlobalInfo.token, null, new HttpApiJsonListener<FeedbackListResult>(FeedbackListResult.class) {
@@ -169,7 +172,7 @@ public class FeedbackFragment extends Fragment {
 
             @Override
             public void onErrorResponse() {
-                showContentView(!feedbackList.isEmpty() && !dateChanged, refresh);
+                showContentView(!feedbackList.isEmpty(), refresh);
             }
 
             @Override

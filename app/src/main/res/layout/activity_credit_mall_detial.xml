@@ -50,11 +50,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/item_padding"
+                    android:textSize="@dimen/small_text_size"
                     android:text="@string/out_of_stock"/>
 
                 <TextView android:id="@+id/txt_commodity_desc"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"/>
 
             </LinearLayout>
 
@@ -67,6 +69,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/item_padding"
         android:layout_alignParentBottom="true"
+        android:paddingTop="@dimen/large_button_padding"
+        android:paddingBottom="@dimen/large_button_padding"
         android:text="@string/action_exchange_now"
         android:visibility="gone"/>
 

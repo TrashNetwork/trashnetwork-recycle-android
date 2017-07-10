@@ -38,7 +38,7 @@ import happyyoung.trashnetwork.recycle.util.GlobalInfo;
 public class DeliverAddressActivity extends AppCompatActivity {
     public static String BUNDLE_KEY_REQUEST_CODE = "RequestCode";
     public static String BUNDLE_RETURN_KEY_ADDRESS = "ReturnAddress";
-    public static int REQUEST_CODE_CHOOSE_ADDRESS = 0x23333;
+    public static int REQUEST_CODE_CHOOSE_ADDRESS = 0x233;
     public static int RESULT_CODE_CHOOSE_ADDRESS = 0x666;
 
     @BindView(R.id.btn_add_address)
@@ -55,6 +55,8 @@ public class DeliverAddressActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(getIntent().getIntExtra(BUNDLE_KEY_REQUEST_CODE, -1) == REQUEST_CODE_CHOOSE_ADDRESS)
+            setTitle(R.string.action_choose_address);
         setContentView(R.layout.activity_deliver_address);
         ButterKnife.bind(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

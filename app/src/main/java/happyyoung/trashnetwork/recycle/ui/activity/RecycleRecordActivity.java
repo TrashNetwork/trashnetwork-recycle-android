@@ -52,8 +52,6 @@ public class RecycleRecordActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        startTime = Calendar.getInstance();
-        startTime.set(Calendar.DATE, startTime.get(Calendar.DATE) - 1);
         endTime = Calendar.getInstance();
         dateRangeSelector = new DateRangeSelector(this, startTime, endTime, new DateRangeSelector.OnDateChangedListener() {
             @Override
@@ -89,18 +87,24 @@ public class RecycleRecordActivity extends AppCompatActivity {
         endTime.set(Calendar.HOUR_OF_DAY, 23);
         endTime.set(Calendar.MINUTE, 59);
         endTime.set(Calendar.SECOND, 59);
-        startTime.set(startTime.get(Calendar.YEAR), startTime.get(Calendar.MONTH), startTime.get(Calendar.DATE),
-                0, 0, 0);
+        if(startTime != null) {
+            startTime.set(startTime.get(Calendar.YEAR), startTime.get(Calendar.MONTH), startTime.get(Calendar.DATE),
+                    0, 0, 0);
+        }
     }
 
     private void refreshRecycleRecord(final boolean refresh, final boolean dateChanged){
         if(refresh) {
             updateTime();
-            dateRangeSelector.setEnable(false);
             recycleRecordListView.setRefreshing(true);
         }
-        String url = HttpApi.getApiUrl(HttpApi.RecycleRecordApi.QUERY_RECORD, DateTimeUtil.getUnixTimestampStr(startTime.getTime()),
-                DateTimeUtil.getUnixTimestampStr(endTime.getTime()), "" + RECORD_REQUEST_LIMIT);
+        dateRangeSelector.setEnable(false);
+        if(refresh && dateChanged){
+            recordList.clear();
+            adapter.notifyDataSetChanged();
+        }
+        String url = HttpApi.getApiUrl(HttpApi.RecycleRecordApi.QUERY_RECORD, DateTimeUtil.getUnixTimestampStr(startTime),
+                DateTimeUtil.getUnixTimestampStr(endTime), "" + RECORD_REQUEST_LIMIT);
         HttpApi.startRequest(new HttpApiJsonRequest(this, url, Request.Method.GET, GlobalInfo.token, null,
                 new HttpApiJsonListener<RecycleRecordListResult>(RecycleRecordListResult.class) {
                     @Override
@@ -122,7 +126,7 @@ public class RecycleRecordActivity extends AppCompatActivity {
 
                     @Override
                     public void onErrorResponse() {
-                        showContent(!recordList.isEmpty() && !dateChanged, refresh);
+                        showContent(!recordList.isEmpty(), refresh);
                     }
 
                     @Override

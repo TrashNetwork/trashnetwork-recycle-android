@@ -35,6 +35,7 @@ public class BitmapSlider extends TextSliderView {
             super.bindEventAndShow(v, targetImageView);
             return;
         }
+        v.findViewById(com.daimajia.slider.library.R.id.loading_bar).setVisibility(View.GONE);
         v.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(listener != null) {
@@ -43,16 +44,14 @@ public class BitmapSlider extends TextSliderView {
             }
         });
         if(targetImageView != null) {
-            switch (getScaleType().ordinal()){
-                case 1:
-                    targetImageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                    break;
-                case 2:
-                    targetImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    break;
-                case 3:
-                    targetImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                    break;
+            if(getScaleType() == ScaleType.Fit){
+                targetImageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            }else if(getScaleType() == ScaleType.FitCenterCrop){
+                targetImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            }else if(getScaleType() == ScaleType.CenterCrop){
+                targetImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            }else if(getScaleType() == ScaleType.CenterInside){
+                targetImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             }
             targetImageView.setImageBitmap(bitmap);
         }

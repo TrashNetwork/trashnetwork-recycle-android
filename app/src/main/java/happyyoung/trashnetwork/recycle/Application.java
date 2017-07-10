@@ -43,18 +43,21 @@ public class Application extends com.activeandroid.app.Application {
         ACTION_USER_UPDATE = getPackageName() + ".action.USER_UPDATE";
 
         RANDOM_COLOR = new int[]{
-                getResources().getColor(R.color.red_500),
-                getResources().getColor(R.color.grey_500),
-                getResources().getColor(R.color.green_500),
-                getResources().getColor(R.color.teal_500),
-                getResources().getColor(R.color.cyan_500),
-                getResources().getColor(R.color.orange_500),
-                getResources().getColor(R.color.light_blue_500),
-                getResources().getColor(R.color.blue_500),
-                getResources().getColor(R.color.light_green_500),
-                getResources().getColor(R.color.amber_500),
-                getResources().getColor(R.color.indigo_500),
-                getResources().getColor(R.color.pink_500),
+                ContextCompat.getColor(this, R.color.red_500),
+                ContextCompat.getColor(this, R.color.grey_500),
+                ContextCompat.getColor(this, R.color.green_500),
+                ContextCompat.getColor(this, R.color.teal_500),
+                ContextCompat.getColor(this, R.color.cyan_500),
+                ContextCompat.getColor(this, R.color.orange_500),
+                ContextCompat.getColor(this, R.color.light_blue_500),
+                ContextCompat.getColor(this, R.color.blue_500),
+                ContextCompat.getColor(this, R.color.light_green_500),
+                ContextCompat.getColor(this, R.color.amber_500),
+                ContextCompat.getColor(this, R.color.indigo_500),
+                ContextCompat.getColor(this, R.color.pink_500),
+                ContextCompat.getColor(this, R.color.purple_500),
+                ContextCompat.getColor(this, R.color.deep_purple_500),
+                ContextCompat.getColor(this, R.color.blue_grey_500),
         };
         colorRandom = new Random(System.currentTimeMillis());
     }

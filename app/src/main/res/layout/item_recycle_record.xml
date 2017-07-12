@@ -26,8 +26,7 @@
             android:layout_centerVertical="true"
             android:orientation="vertical"
             android:layout_marginEnd="@dimen/item_padding_small"
-            android:layout_toEndOf="@+id/icon_trash"
-            android:layout_toStartOf="@+id/txt_recycle_record_time">
+            android:layout_toEndOf="@+id/icon_trash">
 
             <TextView android:id="@+id/txt_recycle_point_name"
                 android:layout_width="match_parent"
@@ -77,8 +76,6 @@
             <TextView android:id="@+id/txt_recycle_record_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
                 android:textSize="@dimen/small_text_size"
                 android:textColor="@color/indigo_500"
                 android:text="07-01"/>

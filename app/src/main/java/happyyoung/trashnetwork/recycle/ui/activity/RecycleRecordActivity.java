@@ -42,6 +42,7 @@ public class RecycleRecordActivity extends AppCompatActivity {
 
     private List<RecycleRecord> recordList = new ArrayList<>();
     private RecycleRecordAdapter adapter;
+    private Calendar endTimeOrigin;
     private Calendar endTime;
     private Calendar startTime;
 
@@ -52,12 +53,17 @@ public class RecycleRecordActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        endTimeOrigin = Calendar.getInstance();
         endTime = Calendar.getInstance();
         dateRangeSelector = new DateRangeSelector(this, startTime, endTime, new DateRangeSelector.OnDateChangedListener() {
             @Override
             public void onDateChanged(Calendar newStartDate, Calendar newEndDate) {
-                endTime = newEndDate;
-                startTime = newStartDate;
+                if(newStartDate != null){
+                    if(startTime == null)
+                        startTime = Calendar.getInstance();
+                    startTime.setTime(newStartDate.getTime());
+                }
+                endTimeOrigin.setTime(newEndDate.getTime());
                 refreshRecycleRecord(true, true);
             }
         });
@@ -84,6 +90,7 @@ public class RecycleRecordActivity extends AppCompatActivity {
     }
 
     private void updateTime(){
+        endTime.setTime(endTimeOrigin.getTime());
         endTime.set(Calendar.HOUR_OF_DAY, 23);
         endTime.set(Calendar.MINUTE, 59);
         endTime.set(Calendar.SECOND, 59);
@@ -117,6 +124,7 @@ public class RecycleRecordActivity extends AppCompatActivity {
                         for(RecycleRecord r : data.getRecycleRecordList()){
                             recordList.add(r);
                             adapter.notifyItemInserted(recordList.size() - 1);
+                            endTime.setTimeInMillis(r.getRecycleTime().getTime() - 1000);
                         }
                         if(data.getRecycleRecordList().size() < RECORD_REQUEST_LIMIT)
                             recycleRecordListView.setNumberBeforeMoreIsCalled(-1);
@@ -134,8 +142,12 @@ public class RecycleRecordActivity extends AppCompatActivity {
                         if(errorInfo.getResultCode() == PublicResultCode.RECYCLE_RECORD_NOT_FOUND){
                             if(!refresh)
                                 recycleRecordListView.setNumberBeforeMoreIsCalled(-1);
-                            else
+                            else {
+                                recordList.clear();
+                                adapter.notifyDataSetChanged();
+                                txtNoRecord.setVisibility(View.VISIBLE);
                                 return true;
+                            }
                         }
                         return super.onErrorDataResponse(statusCode, errorInfo);
                     }

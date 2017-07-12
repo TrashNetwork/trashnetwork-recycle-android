@@ -64,6 +64,7 @@ public class OrderActivity extends AppCompatActivity {
     private List<Order> orderList = new ArrayList<>();
     private OrderAdapter adapter;
     private Calendar startTime;
+    private Calendar endTimeOrigin;
     private Calendar endTime;
     private DateRangeSelector dateRangeSelector;
 
@@ -86,7 +87,8 @@ public class OrderActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 txtNoOrder.setVisibility(View.GONE);
-                endTime = Calendar.getInstance();
+                endTimeOrigin.setTimeInMillis(System.currentTimeMillis());
+                endTime.setTimeInMillis(System.currentTimeMillis());
                 if(position != 4) {
                     dateRangeSelectorView.setVisibility(View.GONE);
                 }else{
@@ -95,8 +97,12 @@ public class OrderActivity extends AppCompatActivity {
                     dateRangeSelector = new DateRangeSelector(OrderActivity.this, null, endTime, new DateRangeSelector.OnDateChangedListener() {
                         @Override
                         public void onDateChanged(Calendar newStartDate, Calendar newEndDate) {
-                            startTime = newStartDate;
-                            endTime = newEndDate;
+                            if(newStartDate != null){
+                                if(startTime == null)
+                                    startTime = Calendar.getInstance();
+                                startTime.setTime(newStartDate.getTime());
+                            }
+                            endTimeOrigin.setTime(newEndDate.getTime());
                             refreshOrder(true, true);
                         }
                     });
@@ -150,11 +156,13 @@ public class OrderActivity extends AppCompatActivity {
             }
         });
         orderListView.setAdapter(adapter);
+        endTimeOrigin = Calendar.getInstance();
         endTime = Calendar.getInstance();
         refreshOrder(true, true);
     }
 
     private void updateTime(){
+        endTime.setTime(endTimeOrigin.getTime());
         endTime.set(Calendar.HOUR_OF_DAY, 23);
         endTime.set(Calendar.MINUTE, 59);
         endTime.set(Calendar.SECOND, 59);
@@ -217,9 +225,14 @@ public class OrderActivity extends AppCompatActivity {
             @Override
             public boolean onErrorDataResponse(int statusCode, Result errorInfo) {
                 if(errorInfo.getResultCode() == PublicResultCode.ORDER_NOT_FOUND){
-                    if(!refresh)
+                    if(!refresh) {
                         orderListView.setNumberBeforeMoreIsCalled(-1);
-                    return true;
+                    }else{
+                        orderList.clear();
+                        adapter.notifyDataSetChanged();
+                        txtNoOrder.setVisibility(View.VISIBLE);
+                        return true;
+                    }
                 }
                 return super.onErrorDataResponse(statusCode, errorInfo);
             }

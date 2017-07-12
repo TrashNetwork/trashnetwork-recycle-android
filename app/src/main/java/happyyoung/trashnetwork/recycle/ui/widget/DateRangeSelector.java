@@ -41,19 +41,23 @@ public class DateRangeSelector {
         this(rootView, rootView.getContext(), startDate, endDate, listener);
     }
 
-    private DateRangeSelector(View rootView, Context context, @Nullable final Calendar startDate, @Nullable final Calendar endDate, @Nullable OnDateChangedListener listener){
+    private DateRangeSelector(View rootView, Context context, @Nullable Calendar outStartDate, @Nullable Calendar outEndDate, @Nullable OnDateChangedListener listener){
         this.context = context;
         ButterKnife.bind(this, rootView);
-        if(startDate != null)
-            editStartDate.setText(DateTimeUtil.convertTimestamp(context, startDate.getTime(), true, false));
-        else
+        if(outStartDate != null) {
+            editStartDate.setText(DateTimeUtil.convertTimestamp(context, outStartDate.getTime(), true, false));
+            startDate = Calendar.getInstance();
+            startDate.setTime(outStartDate.getTime());
+        }else {
             editStartDate.setText("");
-        if(endDate != null)
-            editEndDate.setText(DateTimeUtil.convertTimestamp(context, endDate.getTime(), true, false));
-        else
+        }
+        if(outEndDate != null) {
+            editEndDate.setText(DateTimeUtil.convertTimestamp(context, outEndDate.getTime(), true, false));
+            endDate = Calendar.getInstance();
+            endDate.setTime(outEndDate.getTime());
+        }else {
             editEndDate.setText("");
-        this.startDate = startDate;
-        this.endDate = endDate;
+        }
         this.listener = listener;
         Calendar tempDate = Calendar.getInstance();
         datePickerDialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {

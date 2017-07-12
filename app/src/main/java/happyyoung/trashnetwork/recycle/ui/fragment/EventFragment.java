@@ -114,7 +114,7 @@ public class EventFragment extends Fragment {
     private void refreshEvent(final boolean refresh){
         if(refresh){
             eventListView.setRefreshing(true);
-            endTime = Calendar.getInstance();
+            endTime.setTimeInMillis(System.currentTimeMillis());
         }
 
         String url = HttpApi.getApiUrl(HttpApi.EventApi.EVENTS, DateTimeUtil.getUnixTimestampStr(endTime.getTime()), "" + EVENT_REQUEST_LIMIT);
@@ -147,8 +147,12 @@ public class EventFragment extends Fragment {
                 if(errorInfo.getResultCode() == PublicResultCode.EVENT_NOT_FOUND){
                     if(!refresh)
                         eventListView.setNumberBeforeMoreIsCalled(-1);
-                    else
+                    else {
+                        eventList.clear();
+                        adapter.notifyDataSetChanged();
+                        txtNoEvent.setVisibility(View.VISIBLE);
                         return true;
+                    }
                 }
                 return super.onErrorDataResponse(statusCode, errorInfo);
             }

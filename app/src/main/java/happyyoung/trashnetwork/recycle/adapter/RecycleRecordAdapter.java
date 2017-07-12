@@ -40,7 +40,9 @@ public class RecycleRecordAdapter extends RecyclerView.Adapter<RecycleRecordAdap
         RecyclePoint rp = GlobalInfo.findRecyclePointById(r.getRecyclePointId());
         if(rp == null)
             return;
+
         holder.txtRecycleTime.setText(DateTimeUtil.convertTimestamp(context, r.getRecycleTime(), false, true, false));
+        holder.txtRecycleDate.setText(DateTimeUtil.convertTimestamp(context, r.getRecycleTime(), true, false, false));
         holder.txtRecyclePointName.setText(rp.getRecyclePointName(context));
         holder.txtRecyclePointDesc.setText(rp.getDescription());
         if(r.getBottleNum() != null)
@@ -60,6 +62,8 @@ public class RecycleRecordAdapter extends RecyclerView.Adapter<RecycleRecordAdap
         TextView txtRecyclePointDesc;
         @BindView(R.id.txt_bottle_num)
         TextView txtBottleNum;
+        @BindView(R.id.txt_recycle_record_date)
+        TextView txtRecycleDate;
         @BindView(R.id.txt_recycle_record_time)
         TextView txtRecycleTime;
 

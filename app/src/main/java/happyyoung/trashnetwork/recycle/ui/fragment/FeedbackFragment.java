@@ -52,6 +52,7 @@ public class FeedbackFragment extends Fragment {
 
     private List<Feedback> feedbackList = new ArrayList<>();
     private FeedbackAdapter adapter;
+    private Calendar endTimeOrigin;
     private Calendar endTime;
     private Calendar startTime;
 
@@ -72,12 +73,13 @@ public class FeedbackFragment extends Fragment {
             return rootView;
         rootView = inflater.inflate(R.layout.fragment_feedback, container, false);
         ButterKnife.bind(this, rootView);
+        endTimeOrigin = Calendar.getInstance();
         endTime = Calendar.getInstance();
         startTime = Calendar.getInstance();
         dateSelector = new DateSelector(rootView, endTime, new DateSelector.OnDateChangedListener() {
             @Override
             public void onDateChanged(Calendar newDate) {
-                endTime = newDate;
+                endTimeOrigin.setTime(newDate.getTime());
                 refreshFeedback(true, true);
             }
         });
@@ -132,6 +134,7 @@ public class FeedbackFragment extends Fragment {
     }
 
     private void updateTime() {
+        endTime.setTime(endTimeOrigin.getTime());
         endTime.set(Calendar.HOUR_OF_DAY, 23);
         endTime.set(Calendar.MINUTE, 59);
         endTime.set(Calendar.SECOND, 59);
@@ -178,10 +181,14 @@ public class FeedbackFragment extends Fragment {
             @Override
             public boolean onErrorDataResponse(int statusCode, Result errorInfo) {
                 if (errorInfo.getResultCode() == PublicResultCode.FEEDBACK_NOT_FOUND) {
-                    if (!refresh)
+                    if (!refresh) {
                         feedbackListView.setNumberBeforeMoreIsCalled(-1);
-                    else
+                    }else{
+                        feedbackList.clear();
+                        adapter.notifyDataSetChanged();
+                        txtNoFeedback.setVisibility(View.VISIBLE);
                         return true;
+                    }
                 }
                 return super.onErrorDataResponse(statusCode, errorInfo);
             }

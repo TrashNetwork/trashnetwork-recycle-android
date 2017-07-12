@@ -255,7 +255,12 @@ public class CreditMallFragment extends Fragment implements CommodityPreviewAdap
                         if(errorInfo.getResultCode() == PublicResultCode.COMMODITY_NOT_FOUND){
                             if(!refresh)
                                 listView.setNumberBeforeMoreIsCalled(-1);
-                            return true;
+                            else{
+                                tempCommodityList.clear();
+                                adapter.notifyDataSetChanged();
+                                txtNoCommodity.setVisibility(View.VISIBLE);
+                                return true;
+                            }
                         }
                         return super.onErrorDataResponse(statusCode, errorInfo);
                     }

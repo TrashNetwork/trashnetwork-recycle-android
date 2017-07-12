@@ -38,11 +38,12 @@ public class DateSelector {
         this(rootView, rootView.getContext(), date, listener);
     }
 
-    private DateSelector(View rootView, Context context, final Calendar date, @Nullable OnDateChangedListener listener){
+    private DateSelector(View rootView, Context context, Calendar outDate, @Nullable OnDateChangedListener listener){
         this.context = context;
         ButterKnife.bind(this, rootView);
-        dateEdit.setText(DateTimeUtil.convertTimestamp(context, date.getTime(), true, false));
-        this.date = date;
+        dateEdit.setText(DateTimeUtil.convertTimestamp(context, outDate.getTime(), true, false));
+        this.date = Calendar.getInstance();
+        this.date.setTime(outDate.getTime());
         this.listener = listener;
         datePickerDialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -52,7 +53,7 @@ public class DateSelector {
                 if(DateSelector.this.listener != null)
                     DateSelector.this.listener.onDateChanged(date);
             }
-        }, date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH));
+        }, outDate.get(Calendar.YEAR), outDate.get(Calendar.MONTH), outDate.get(Calendar.DAY_OF_MONTH));
     }
 
     @OnClick({R.id.btn_date_decrease, R.id.btn_date_increase, R.id.edit_date})

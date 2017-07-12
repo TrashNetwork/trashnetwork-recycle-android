@@ -42,7 +42,7 @@ public class CreditRecordAdapter extends RecyclerView.Adapter<CreditRecordAdapte
         holder.goodIcon.setShapeColor(Application.getRandomColor());
         holder.goodIcon.setLetter(StringUtil.getDigestLetters(cr.getItemDescription(), 2));
         holder.txtItemName.setText(cr.getItemDescription());
-        holder.txtRecordTime.setText(DateTimeUtil.convertTimestamp(context, cr.getRecordTime(), false, true, false));
+        holder.txtRecordTime.setText(DateTimeUtil.convertTimestamp(context, cr.getRecordTime(), true, true, false));
         String creditDelta = cr.getCredit().toString();
         if(cr.getCredit() > 0)
             creditDelta = "+" + cr.getCredit();

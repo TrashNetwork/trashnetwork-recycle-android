@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity
 
         JPushInterface.setDebugMode(true);
         JPushInterface.init(getApplicationContext());
+        JPushInterface.resumePush(getApplicationContext());
     }
 
     private void exitApp(){
